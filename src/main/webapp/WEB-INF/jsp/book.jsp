@@ -1,17 +1,9 @@
-<%-- 
-    Document   : book
-    Created on : 11-Oct-2013, 13:15:21
-    Author     : ljleppan 
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<!DOCTYPE html>
+<%@include file="/WEB-INF/jspf/taglib.jspf" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><c:out value="${book.title}" /></title>
+        <title>Lieberry - <c:out value="${book.title}" /></title>
     </head>
     <body>
         <h1><c:out value="${book.title}" /></h1>

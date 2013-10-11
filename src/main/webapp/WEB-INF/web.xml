@@ -48,11 +48,23 @@
             <param-value></param-value> <!-- use listener -->
         </init-param>
         <load-on-startup>0</load-on-startup>
-    </servlet>    
+    </servlet> 
+    
     <servlet-mapping>
         <servlet-name>spring-dispatcher</servlet-name>
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
+    
+    <filter>
+        <filter-name>hiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>hiddenHttpMethodFilter</filter-name>
+        <servlet-name>spring-dispatcher</servlet-name>
+    </filter-mapping>
+    
     
     <session-config>
         <session-timeout>30</session-timeout>

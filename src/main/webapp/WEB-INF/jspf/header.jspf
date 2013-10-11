@@ -1,0 +1,8 @@
+<sec:authorize access="hasAnyRole('user', 'admin')">
+    usermngmnt
+</sec:authorize>
+<sec:authorize access="isAnonymous()">
+    login
+</sec:authorize>
+
+<h1>Lieberry</h1>

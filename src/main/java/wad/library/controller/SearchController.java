@@ -17,11 +17,13 @@ public class SearchController {
 
     @Autowired
     BookService bookService;
+    
     @Autowired
     OpenLibraryService openLibraryService;
     
     @RequestMapping(value = "search", method = RequestMethod.GET)
-    public String search(){
+    public String search(Model model){
+        model.addAttribute("didSearch", false);
         return "search";
     }
 
@@ -44,7 +46,8 @@ public class SearchController {
             results = bookService.findAllByTitle(query);
         }
 
-        model.addAttribute("book", results);
-        return "redirect:/app/search";
+        model.addAttribute("books", results);
+        model.addAttribute("didSearch", true);
+        return "search";
     }
 }

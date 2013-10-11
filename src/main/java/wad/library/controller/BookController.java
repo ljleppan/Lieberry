@@ -24,45 +24,53 @@ public class BookController {
     
     @RequestMapping(value="books", method=RequestMethod.GET)
     public String getBooks(Model model){
+        System.out.println("GET to books");
         model.addAttribute("books", bookService.findAll());
-        for (Book b : bookService.findAll()){
-            System.out.println(b.getTitle());
-        }
         return "books";
+    }
+    
+    @RequestMapping(value="books", method=RequestMethod.POST)
+    public String createBook(@Valid @ModelAttribute(value="book") Book book, BindingResult bindingResult){
+        System.out.println("POST to books");
+        if (bindingResult.hasErrors()){
+            return "redirect:/app/books";
+        }
+        bookService.create(book);
+        return "redirect:/app/books/"+book.getIsbn();
     }
     
     @RequestMapping(value="books/{isbn}", method=RequestMethod.GET)
     public String getBook(Model model, @PathVariable String isbn){
+        System.out.println("GET to books/"+isbn);
         Book book = bookService.findByIsbn(isbn);
         if (book == null){
             model.addAttribute("isbn", isbn);
             return "redirect:/app/retrieve";
         }
         model.addAttribute("book", book);
-        return "book";
-    }
-    
-    @RequestMapping(value="books/{isbn}", method=RequestMethod.POST)
-    public String createBook(@PathVariable String isbn, @Valid @ModelAttribute Book book, BindingResult result){
-        if (result.hasErrors()){
-            return "redirect:/app/books";
-        }
-        bookService.create(book);
-        return "redirect:/app/book/"+book.getIsbn();
+        return "books";
     }
     
     @RequestMapping(value="books/{isbn}", method=RequestMethod.PUT)
-    public String updateBook(@PathVariable String isbn, @Valid @ModelAttribute Book book, BindingResult result){
-        if (result.hasErrors()){
+    public String updateBook(@PathVariable String isbn, @Valid @ModelAttribute("book") Book book, BindingResult bindingResult){
+        System.out.println("PUT to books/"+isbn);
+        if (bindingResult.hasErrors()){
             return "redirect:/app/books";
         }
         bookService.update(book);
-        return "redirect:/app/book/"+book.getIsbn();
+        return "redirect:/app/books/"+book.getIsbn();
     }
     
     @RequestMapping(value="books/{isbn}", method=RequestMethod.DELETE)
-    public String createBook(@PathVariable String isbn){
+    public String deleteBook(@PathVariable String isbn){
+        System.out.println("DELETE to books/"+isbn);
         bookService.delete(isbn);
         return "redirect:/app/books";
+    }
+    
+    @RequestMapping(value="add", method=RequestMethod.GET)
+    public String addBooksForm(Model model){
+        System.out.println("GET to add");
+        return "add";
     }
 }

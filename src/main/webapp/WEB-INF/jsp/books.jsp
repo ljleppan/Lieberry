@@ -1,15 +1,9 @@
-<%-- 
-    Document   : books
-    Created on : 11-Oct-2013, 13:15:29
-    Author     : ljleppan
---%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
+<%@include file="/WEB-INF/jspf/taglib.jspf" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Lieberry</title>
+        <title>Lieberry - All books</title>
     </head>
     <body>
         <h1>All our books:</h1>
@@ -23,6 +17,7 @@
                         <td>Publisher</td>
                         <td>Publication year</td>
                         <td>ISBN</td>
+                        <td></td>
                     </tr>
                 </thead>
                 <c:forEach var="book" items="${books}">
@@ -35,6 +30,7 @@
                         <td><c:out value="${book.publisher}"/></td>
                         <td><c:out value="${book.publicationYear}"/></td>
                         <td><c:out value="${book.isbn}"/></td>
+                        <td><form:form action="${pageContext.request.contextPath}/app/books/${book.isbn}" method="DELETE"><input type="submit" value="delete"></form:form>
                     </tr>
                 </c:forEach>
             </table>
