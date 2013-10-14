@@ -1,8 +1,15 @@
-<sec:authorize access="hasAnyRole('user', 'admin')">
-    usermngmnt
-</sec:authorize>
-<sec:authorize access="isAnonymous()">
-    login
-</sec:authorize>
-
-<h1>Lieberry</h1>
+    </head>
+    <body>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/wepa/app/">Lieberry</a>
+                <form class="navbar-form pull-right">
+                    <input class="span2" type="text" placeholder="Email">
+                    <input class="span2" type="password" placeholder="Password">
+                    <button type="submit" class="btn">Sign in</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container">

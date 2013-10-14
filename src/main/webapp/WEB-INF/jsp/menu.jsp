@@ -1,15 +1,21 @@
 <%@include file="/WEB-INF/jspf/taglib.jspf" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@include file="/WEB-INF/jspf/head.jspf"  %>
+
         <title>Lieberry</title>
-    </head>
-    <body>
-        <jsp:include page="../jspf/header.jspf" />
-        <a href="books">Browse library</a><br />
-        <a href="search">Search library</a></br>
-        <a href="add">Add a book</a></br>
-        <jsp:include page="../jspf/footer.jspf" />
-    </body>
-</html>
+
+<%@include file="/WEB-INF/jspf/header.jspf"  %>
+    <div class="hero-unit text-center">
+        <h1>Lieberry</h1>
+        <p class="lead">Lorem ipsum, lieberry is fun</p>
+    </div>
+    <div class="control-group text-center">
+        <a href="books" class="btn btn-large input-block-level">Browse library</a>
+    </div>
+    <div class="control-group text-center">
+        <a href="add" class="btn btn-large input-block-level">Add a book</a>
+    </div>
+    <div class="control-group text-center">
+        <a href="import" class="btn btn-large input-block-level">Import a book</a>
+    </div>
+                
+<%@include file="/WEB-INF/jspf/footer.jspf"  %>

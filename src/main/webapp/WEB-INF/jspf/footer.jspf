@@ -1,6 +1,11 @@
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-Footer
+        
+        <hr>
+        <div class="footer">
+            <p>Lieberry &copy; Leo Leppänen 2013</p>
+            <p><a href="http://getbootstrap.com/">Bootstrap</a> &copy; <a href="https://twitter.com/">Twitter</a> 2013 (<a href="${pageContext.request.contextPath}/assets/bootstrap/license.txt">license</a>)</p>
+        </div>
+    </body>
+</html>
+
+<script src="${pageContext.request.contextPath}/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/jquery/jquery-1.10.2.min.js"></script>
