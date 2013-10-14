@@ -1,8 +1,8 @@
 <%@include file="/WEB-INF/jspf/taglib.jspf" %>
 <%@include file="/WEB-INF/jspf/head.jspf"  %>
 
-        <title>Lieberry - Add a book</title>  
-        
+        <title>Lieberry - Edit a book</title>
+
         <script>
             var rowNum = ${fn:length(book.authors)} -1;
             function addRow() {
@@ -28,15 +28,12 @@
 <%@include file="/WEB-INF/jspf/header.jspf"  %>
 
         <div class="jumbotron ">
-            <h1>Add a book</h1>
+            <h1>Edit a book</h1>
             <p class="lead">All fields must be filled.</p>
-            <c:if test="${not empty isbnInUse}">
-                <p class="error" style="color: red; font-weight: bold;">The provided ISBN already exists in the database. Press <a href="${pageContext.request.contextPath}/app/edit/${book.isbn}">here</a> to edit the existing book or provide an ISBN that is not in the database.</p>
-            </c:if>
         </div>
 
         <div>
-            <form:form modelAttribute="book" action="${pageContext.request.contextPath}/app/books" method="POST" class="form-horizontal">
+            <form:form modelAttribute="book" action="${pageContext.request.contextPath}/app/books/${book.isbn}" method="POST" class="form-horizontal">
                 <div class="control-group">
                     <label for="title" class="control-label">
                         Title

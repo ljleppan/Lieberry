@@ -55,7 +55,7 @@ public class JpaBookService implements BookService {
         
         b = new Book();
         authors = new ArrayList<String>();
-        authors.add("Pelle H. Ermanni");
+        authors.add("Pelle H Ermanni");
         b.setAuthors(authors);
         b.setIsbn("75234212349");
         b.setPublicationYear(2005);
@@ -65,7 +65,7 @@ public class JpaBookService implements BookService {
         
         b = new Book();
         authors = new ArrayList<String>();
-        authors.add("Pelle H. Ermanni");
+        authors.add("Pelle H Ermanni");
         b.setAuthors(authors);
         b.setIsbn("242134");
         b.setPublicationYear(2005);
@@ -138,9 +138,7 @@ public class JpaBookService implements BookService {
     @Override
     @Transactional(readOnly=false)
     public Book update(Book book) {
-        delete(book);
-        create(book);
-        return book;
+        return bookRepository.save(book);
     }
 
     @Override

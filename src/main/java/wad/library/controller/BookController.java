@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,12 +47,19 @@ public class BookController {
         return "books";
     }
     
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="books", method=RequestMethod.POST)
     public String create(Model model, @Valid Book book, BindingResult bindingResult){
-        System.out.println("POST to books");
+        System.out.println("POST to books");   
         if (bindingResult.hasErrors()){
             System.out.println("Invalid form, book NOT added");
             model.addAttribute("book", book);
+            return "add";
+        }
+        if (bookService.findByIsbn(book.getIsbn()) != null){
+            System.out.println("ISBN exists, book NOT added");
+            model.addAttribute("book", book);
+            model.addAttribute("isbnInUse", true);
             return "add";
         }
         System.out.println("Valid form, book added");
@@ -67,17 +75,21 @@ public class BookController {
         return "book";
     }
     
-    @RequestMapping(value="books/{isbn}", method=RequestMethod.PUT)
-    public String updateBook(Model model, @PathVariable String isbn, @Valid @ModelAttribute("book") Book book, BindingResult bindingResult){
-        System.out.println("PUT to books/"+isbn);
+    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @RequestMapping(value="books/{isbn}", method=RequestMethod.POST)
+    public String updateBook(Model model, @PathVariable String isbn, @Valid Book book, BindingResult bindingResult){
+        System.out.println("POST to books/"+isbn);
         if (bindingResult.hasErrors()){
+            System.out.println("Invalid form, book NOT updated");
             model.addAttribute("book", book);
-            return "redirect:/app/books";
+            return "edit";
         }
+        System.out.println("Valid form, book updated");
         bookService.update(book);
         return "redirect:/app/books/"+book.getIsbn();
     }
     
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="books/{isbn}", method=RequestMethod.DELETE)
     public String deleteBook(@PathVariable String isbn){
         System.out.println("DELETE to books/"+isbn);
@@ -85,6 +97,7 @@ public class BookController {
         return "redirect:/app/books";
     }
     
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="add", method=RequestMethod.GET)
     public String addBooksForm(Model model){
         System.out.println("GET to add");
@@ -95,20 +108,32 @@ public class BookController {
         return "add";
     }
     
+    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @RequestMapping(value="edit/{isbn}", method=RequestMethod.GET)
+    public String editBookForm(Model model, @PathVariable String isbn){
+        System.out.println("GET to edit");
+        Book book = bookService.findByIsbn(isbn);
+        model.addAttribute("book", book);
+        return "edit";
+    }
+    
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="import", method=RequestMethod.GET)
     public String importBooksForm(){
         System.out.println("GET to import");
         return "import";
     }
     
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="import", method=RequestMethod.POST)
     public String findBookToImport(Model model, @RequestParam String isbn){
+        System.out.println("POST for import");
         String newIsbn = isbn.replaceAll("[^0-9]", "");
         if (isbn.toLowerCase().endsWith("x")){
             newIsbn = newIsbn.concat("X");
         }
-        Book book = openLibraryService.retrieve(isbn);
-        model.addAttribute("book", book);
-        return "add";
+        openLibraryService.retrieve(isbn);
+        System.out.println("1");
+        return "redirect:/app/add";
     }
 }

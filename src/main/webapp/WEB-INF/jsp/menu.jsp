@@ -11,11 +11,13 @@
     <div class="control-group text-center">
         <a href="books" class="btn btn-large input-block-level">Browse library</a>
     </div>
+    <sec:authorize access="hasAnyRole('user', 'admin')">
     <div class="control-group text-center">
         <a href="add" class="btn btn-large input-block-level">Add a book</a>
     </div>
     <div class="control-group text-center">
         <a href="import" class="btn btn-large input-block-level">Import a book</a>
     </div>
+    </sec:authorize>
                 
 <%@include file="/WEB-INF/jspf/footer.jspf"  %>

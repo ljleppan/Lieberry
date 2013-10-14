@@ -15,9 +15,7 @@
             <c:out value="${book.title}" />
             <br />
             Authors: 
-            <c:forEach var="author" items="${book.authors}">
-                <a href="${pageContext.request.contextPath}/app/books/author/${author}"><c:out value="${author}"/>; </a>
-            </c:forEach>
+            <a href="${pageContext.request.contextPath}/app/books/author/${book.authors[0]}"><c:out value="${book.authors[0]}"/></a><c:if test="${fn:length(book.authors) > 1}"><c:forEach var="index" begin="1" end="${fn:length(book.authors) - 1}">, <a href="${pageContext.request.contextPath}/app/books/author/${book.authors[index]}"><c:out value="${book.authors[index]}"/></a></c:forEach></c:if>
             <br/>
             ISBN:
             <c:out value="${book.isbn}" />

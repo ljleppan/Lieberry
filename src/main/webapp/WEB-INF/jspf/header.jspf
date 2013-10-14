@@ -3,12 +3,13 @@
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="/wepa/app/">Lieberry</a>
-                <form class="navbar-form pull-right">
-                    <input class="span2" type="text" placeholder="Email">
-                    <input class="span2" type="password" placeholder="Password">
-                    <button type="submit" class="btn">Sign in</button>
-                </form>
+                <a class="brand" href="${pageContext.request.contextPath}/wepa/app/">Lieberry</a>
+                    <form action="POST" method="j_spring_security_check" class="navbar-form pull-right">
+                        <input name="j_username" class="span2" type="text" placeholder="Username" />
+                        <input name="j_password" class="span2" type="password" placeholder="Password" />
+                        <input type="submit" name="submit" value="login" />
+                    </form>
+                    <a href="j_spring_security_logout" class="btn" >Logout</a>                    
             </div>
         </div>
     </div>

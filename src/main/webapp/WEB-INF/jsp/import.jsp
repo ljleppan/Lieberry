@@ -18,7 +18,7 @@
                     </label>
                     <div class="controls">
                         <input type="text" name="isbn" />
-                        <span class="help-inline">Accepted forms are f.ex. "10-2023-123123-X" and "102023123123X"</span>
+                        <span class="help-inline">Accepted forms are f.ex. "10-2023-123123-X" and "9780980200447"</span>
                     </div>
                 </div>
                 

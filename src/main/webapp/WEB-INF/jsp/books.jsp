@@ -58,6 +58,7 @@
                             <th>Publisher</th>
                             <th>Publication year</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <c:forEach var="book" items="${books}">
@@ -73,7 +74,16 @@
                             <td><c:out value="${book.isbn}"/></td>
                             <td><a href="${pageContext.request.contextPath}/app/books/publisher/${book.publisher}"><c:out value="${book.publisher}"/></a></td>
                             <td><a href="${pageContext.request.contextPath}/app/books/publicationyear/${book.publicationYear}"><c:out value="${book.publicationYear}"/></a></td>
-                            <td><form:form action="${pageContext.request.contextPath}/app/books/${book.isbn}" method="DELETE"><input class="btn" type="submit" value="Delete"></form:form>
+                            <td>
+                                <sec:authorize access="hasAnyRole('user', 'admin')">
+                                    <a href="${pageContext.request.contextPath}/app/edit/${book.isbn}" class="btn">Edit</a>
+                                </sec:authorize>
+                            </td>
+                            <td>
+                                <sec:authorize access="hasAnyRole('user', 'admin')">
+                                    <form:form action="${pageContext.request.contextPath}/app/books/${book.isbn}" method="DELETE"><input class="btn" type="submit" value="Delete"></form:form>
+                                </sec:authorize>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.util.AutoPopulatingList;
 
 @Entity
 @Table(name="books")
@@ -36,7 +37,7 @@ public class Book implements Serializable {
         joinColumns=@JoinColumn(name="BOOK_ISBN")
     )
     @Column(name="AUTHOR")
-    private List<String> authors = new ArrayList<String>();
+    private List<String> authors = new AutoPopulatingList(String.class);
     
     @NotBlank
     @Column(name="PUBLISHER")
