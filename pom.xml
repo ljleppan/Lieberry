@@ -171,6 +171,13 @@
             <version>3.2.4.RELEASE</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>0.31</version>
+        </dependency>
+
     </dependencies>
     
     <repositories>
@@ -285,6 +292,15 @@
                     </systemPropertyVariables>
                 </configuration>              
             </plugin>
+            
+            <!-- PIT -->
+            
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>0.31</version>
+            </plugin>
+                      
         </plugins>
-    </build>
+    </build>    
 </project>

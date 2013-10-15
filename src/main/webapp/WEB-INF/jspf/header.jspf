@@ -5,10 +5,10 @@
             <div class="container">
                 <a class="brand" href="${pageContext.request.contextPath}/">Lieberry</a>
                 <sec:authorize access="hasAnyRole('admin', 'user')">
-                    <a href="${pageContext.request.contextPath}/app/logout" class="pull-right btn btn-primary" >Logout</a>  
+                    <a id="logout" href="${pageContext.request.contextPath}/app/logout" class="pull-right btn btn-primary" >Logout</a>  
                 </sec:authorize>
                 <sec:authorize access="!hasAnyRole('user', 'admin')">
-                    <a href="${pageContext.request.contextPath}/app/login" class="pull-right btn btn-primary" >Login</a>  
+                    <a id="login" href="${pageContext.request.contextPath}/app/login" class="pull-right btn btn-primary" >Login</a>  
                 </sec:authorize>
             </div>
         </div>
