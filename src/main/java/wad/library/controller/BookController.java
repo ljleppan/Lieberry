@@ -132,8 +132,9 @@ public class BookController {
         if (isbn.toLowerCase().endsWith("x")){
             newIsbn = newIsbn.concat("X");
         }
-        openLibraryService.retrieve(isbn);
-        System.out.println("1");
-        return "redirect:/app/add";
+        Book book = openLibraryService.retrieve(newIsbn);
+        System.out.println("Retrieved book "+ book);
+        model.addAttribute("book", book);
+        return "add";
     }
 }

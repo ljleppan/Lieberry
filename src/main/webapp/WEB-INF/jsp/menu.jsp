@@ -19,5 +19,12 @@
         <a href="import" class="btn btn-large input-block-level">Import a book</a>
     </div>
     </sec:authorize>
+    
+    <div class="control-group text-center">
+        <sec:authorize access="!hasAnyRole('user', 'admin')">
+            <a href="register" class="btn btn-large input-block-level">Register</a>
+        </sec:authorize>
+    </div>
+    
                 
 <%@include file="/WEB-INF/jspf/footer.jspf"  %>

@@ -87,6 +87,8 @@ public class JpaBookService implements BookService {
         authors = new ArrayList<String>();
         authors.add("Vinski");
         authors.add("Moto");
+        authors.add("Turbo");
+        authors.add("Santtu");
         b.setAuthors(authors);
         b.setIsbn("98678");
         b.setPublicationYear(1995);

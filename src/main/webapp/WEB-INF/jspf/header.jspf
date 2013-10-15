@@ -1,15 +1,15 @@
-    </head>
+</head>
     <body>
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="${pageContext.request.contextPath}/wepa/app/">Lieberry</a>
-                    <form action="POST" method="j_spring_security_check" class="navbar-form pull-right">
-                        <input name="j_username" class="span2" type="text" placeholder="Username" />
-                        <input name="j_password" class="span2" type="password" placeholder="Password" />
-                        <input type="submit" name="submit" value="login" />
-                    </form>
-                    <a href="j_spring_security_logout" class="btn" >Logout</a>                    
+                <a class="brand" href="${pageContext.request.contextPath}/">Lieberry</a>
+                <sec:authorize access="hasAnyRole('admin', 'user')">
+                    <a href="${pageContext.request.contextPath}/app/logout" class="pull-right btn btn-primary" >Logout</a>  
+                </sec:authorize>
+                <sec:authorize access="!hasAnyRole('user', 'admin')">
+                    <a href="${pageContext.request.contextPath}/app/login" class="pull-right btn btn-primary" >Login</a>  
+                </sec:authorize>
             </div>
         </div>
     </div>

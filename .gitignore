@@ -8,6 +8,12 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 
+# IntelliJ #
+
+.idea/
+*.iml
+*.iws
+
 # Java #
 
 *.class

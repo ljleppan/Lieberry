@@ -2,6 +2,7 @@ package wad.library.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,16 @@ public class Book implements Serializable {
     
     @Min(0)
     @Column(name="PUBLICATIONYEAR")
-    private int publicationYear; 
+    private int publicationYear = new GregorianCalendar().get(GregorianCalendar.YEAR); 
+    
+    @Override
+    public String toString(){
+        return "ISBN: "+this.isbn+"\n"+
+                "title: "+this.title+"\n"+
+                "authors: "+this.authors.get(0)+"\n"+
+                "publisher: "+this.publisher+"\n"+
+                "publicationYear: "+this.publicationYear;
+    }
 
     public void setIsbn(String isbn){
         String newIsbn = isbn.replaceAll("[^0-9]", "");
