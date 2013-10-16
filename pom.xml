@@ -171,12 +171,6 @@
             <version>3.2.4.RELEASE</version>
             <scope>test</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-maven</artifactId>
-            <version>0.31</version>
-        </dependency>
 
     </dependencies>
     
@@ -285,20 +279,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.16</version>
+                <!--
                 <configuration>
-                    <!-- verify that the system property for jetty port is set properly -->
                     <systemPropertyVariables>
                         <jetty.port>8090</jetty.port>
                     </systemPropertyVariables>
-                </configuration>              
-            </plugin>
-            
-            <!-- PIT -->
-            
-            <plugin>
-                <groupId>org.pitest</groupId>
-                <artifactId>pitest-maven</artifactId>
-                <version>0.31</version>
+                </configuration>      -->        
             </plugin>
                       
         </plugins>

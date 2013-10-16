@@ -187,5 +187,5 @@ public class JpaBookService implements BookService {
     public Page<Book> findAllByPublicationYear(int year, int pageNumber, int pageSize) {
         PageRequest pageRequest = new PageRequest(pageNumber - 1, pageSize, Sort.Direction.DESC, "title");
         return bookRepository.findByPublicationYear(year, pageRequest);
-    }   
+    }
 }

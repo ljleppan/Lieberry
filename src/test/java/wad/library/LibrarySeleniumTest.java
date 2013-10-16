@@ -1,41 +1,69 @@
 package wad.library;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.persistence.jpa.jpql.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import wad.library.domain.Book;
+import wad.library.repository.BookRepository;
+import wad.library.service.BookService;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/spring-base.xml")
 public class LibrarySeleniumTest {
     
     private String port;
     private WebDriver driver;
     private String baseUrl;
+    private String rootUrl;
+    
+    @Autowired
+    BookService bookService;
+    
+    @Autowired
+    BookRepository bookRepository;
     
     @Before
     public void setUp() throws Exception {
+        clearDatabase();
+        initDatabase();
         driver = new HtmlUnitDriver();
         port = System.getProperty("jetty.port", "8080");
-        baseUrl = "http://localhost:" + port+"/wepa/";
+        baseUrl = "http://localhost:" + port+"/wepa/app";
+        rootUrl = "http://localhost:" + port;
+        go("/logout");
+        
+    }
+    
+    @After
+    public void tearDown(){
+        driver.close();
     }
     
     @Test
     public void rootLoadsMenu(){
-        driver.get(baseUrl);
+        driver.get(rootUrl+"/wepa/app");
         Assert.isTrue(
                 sourceContains("Browse library"),
                 "Root should serve a page with a 'Browse library' button."
                 );
     }
     
-    /* Login and Logout buttons */
+    // Login and Logout buttons 
     
     @Test
     public void loginButtonWhenUserNotLoggedIn(){
-        driver.get(baseUrl);
+        goBase();
         Assert.isTrue(
                 sourceContains("Login"),
                 "Menu should contain a 'Login' button when the user is not logged in."
@@ -53,7 +81,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void noLogoutButtonWhenUserNotLoggedIn(){
-        driver.get(baseUrl);
+        goBase();
         Assert.isFalse(
                 sourceContains("Logout</a>"),
                 "Menu should NOT contain a 'Logout' button if user is not logged in."
@@ -71,7 +99,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void loginButtonTakesUserToLoginPage(){
-        driver.get(baseUrl);
+        goBase();
         WebElement e = findById("login");
         e.click();
         Assert.isTrue(
@@ -90,11 +118,11 @@ public class LibrarySeleniumTest {
                 "Pressing the 'Logout' button should take the user to the menu.");
     }
     
-    /* Menu buttons */
+    // Menu buttons 
     
     @Test
     public void onlyBrowseAndRegisterForUnauthorizedUsers(){
-        driver.get(baseUrl);
+        goBase();
         Assert.isTrue(
                 sourceContains("Browse library"),
                 "Menu should always contain a 'Browse library' button."
@@ -144,11 +172,11 @@ public class LibrarySeleniumTest {
                 "Menu should not contain an 'Import a book' button after logging out.");
     }
     
-    /* Login page */
+    // Login page 
     
     @Test
     public void loginPageContainsUsernameAndPasswordFields(){
-        driver.get(baseUrl+"/app/login");
+        go("/login");
         Assert.isTrue(
                 findById("j_password") != null,
                 "Login page should contain a input with id 'j_password'"
@@ -161,7 +189,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void loginPageShouldNotHaveAnErrorBeforeFirstLoginAttempt(){
-        driver.get(baseUrl+"/app/login");
+        go("/login");
         Assert.isFalse(
                 sourceContains("Bad Credentials"),
                 "Login page should NOT contain an error before any login attempts.");
@@ -179,7 +207,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void loginWithBadCredentialsTakesUserToLoginPageWithError(){
-        driver.get(baseUrl+"/app/login");
+        go("/login");
         WebElement e = findById("j_username");
         e.clear();
         e.sendKeys("mockUserForSeleniumThisIsBad");
@@ -198,11 +226,11 @@ public class LibrarySeleniumTest {
                 "Login page should contain an error after a failed login.");
     }
     
-    /* Browse library */
+    // Browse library 
     
     @Test
     public void browseLibraryShownWithoutLoggingIn(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isTrue(
                 sourceContains("books matching the query"),
                 "The 'Browse books' page should be viewable without logging in.");
@@ -210,7 +238,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void browseLibraryViewButtonShownForEveryone(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isTrue(
                 sourceContains("View"),
                 "The 'View' button should be visible without logging in.");
@@ -218,7 +246,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void browseLibraryEditAndDeleteNotShownForEveryone(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("Edit"),
                 "The 'Edit' button should NOT be visible without logging in.");
@@ -230,7 +258,7 @@ public class LibrarySeleniumTest {
     @Test
     public void browseLibraryEditAndDeleteShownWhenLoggedIn(){
         login();
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isTrue(
                 sourceContains("Edit"),
                 "The 'Edit' button should be visible after logging in.");
@@ -241,7 +269,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void browseLibraryCorrectPageInfoOnFirstPage(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("Prev") == null,
                 "There should be no 'Prev' button on the first page.");
@@ -255,7 +283,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void browseLibraryCorrectPageInfoOnSecondPage(){
-        driver.get(baseUrl+"/app/books?pageNumber=2");
+        go("/books?pageNumber=2");
         Assert.isFalse(
                 sourceContains("Next"),
                 "There should be no 'Next' button on the second page.");
@@ -269,7 +297,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void browseLibraryClickingOnAuthorRedirectsCorrectly(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         WebElement e = findByLinkText("Pelle H Ermanni");
         e.click();
         Assert.isTrue(
@@ -279,7 +307,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void browseLibraryClickingOnPublisherRedirectsCorreclty(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         WebElement e = findByLinkText("Gaudeamus");
         e.click();
         Assert.isTrue(
@@ -289,7 +317,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void browseLibraryClickingOnPublicationYearRedirectsCorreclty(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         WebElement e = findByLinkText("2000");
         e.click();
         Assert.isTrue(
@@ -297,11 +325,11 @@ public class LibrarySeleniumTest {
                 "Clicking on a publication year should redirect the user to an url of the form 'books/publicationyear/<publicationyear>");
     }
     
-    /* Search */
+    // Search 
     
     @Test
     public void searchTitleSearchWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("A happy day"),
                 "First page should not contain the book 6th book in alphabetical order.");
@@ -321,7 +349,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchPartialTitleSearchWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("A happy day"),
                 "First page should not contain the book 6th book in alphabetical order.");
@@ -341,7 +369,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchAuthorWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("Vinski"),
                 "First page should not contain any books by 'Vinski'.");
@@ -363,7 +391,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchPartialAuthorWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("Vinski"),
                 "First page should not contain any books by 'Vinski'.");
@@ -385,7 +413,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchIsbnWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("98678"),
                 "First page should not contain the book with ISBN '98678'.");
@@ -407,7 +435,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchPartialIsbnWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("978472579"),
                 "First page should not contain the book with ISBN '978472579'.");
@@ -430,7 +458,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchPublisherWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("98678"),
                 "First page should not contain the book with ISBN '98678'.");
@@ -452,7 +480,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchPartialPublisherWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("98678"),
                 "First page should not contain the book with ISBN '98678'.");
@@ -474,7 +502,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchPublicationYearWorks(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("98678"),
                 "First page should not contain the book with ISBN '98678'.");
@@ -496,7 +524,7 @@ public class LibrarySeleniumTest {
     
     @Test
     public void searchPublicationYearOnlyReturnCompleteMatches(){
-        driver.get(baseUrl+"/app/books");
+        go("/books");
         Assert.isFalse(
                 sourceContains("98678"),
                 "First page should not contain the book with ISBN '98678'.");
@@ -513,42 +541,347 @@ public class LibrarySeleniumTest {
                 "Searching for publication year '20', the results should NOT contain any books.");
     }
     
-    /* Filter URLs */
+    // Filter URLs 
     
-    //TODO;
+    @Test
+    public void filterAuthorReturnsBooksByFilteredAuthor(){
+        go("/books/author/Pelle%20H%20Ermanni");
+        Assert.isTrue(
+                sourceContains("for 2 books matching the query"),
+                "Filtering by author 'Pelle H Ermanni' should produce exactly two books.");
+        Assert.isTrue(
+                sourceContains("242134"),
+                "Filtering by author 'Pelle H Ermanni', the results should contain the ISBN '242134'.");
+        Assert.isTrue(
+                sourceContains("75234212349"),
+                "Filtering by author 'Pelle H Ermanni', the results should contain the ISBN '75234212349'.");
+    }
     
-    /* Book details */
+    @Test
+    public void filterAuthorDoesNotReturnPartialMatches(){
+        go("/books/author/Pelle");
+        Assert.isTrue(
+                sourceContains("for 0 books matching the query"),
+                "Filtering by author 'Pelle' should produce exactly zero books.");
+    }
     
-    //TODO
+    @Test
+    public void filterPublisherReturnsBooksByFilteredPublisher(){
+        go("/books/publisher/Fuuu");
+        Assert.isTrue(
+                sourceContains("for 3 books matching the query"),
+                "Filtering by publisher 'Fuuu' should produce exactly three books.");
+        Assert.isTrue(
+                sourceContains("242134"),
+                "Filtering by publisher 'Fuuu', the results should contain the ISBN '242134'.");
+        Assert.isTrue(
+                sourceContains("75234212349"),
+                "Filtering by publisher 'Fuuu', the results should contain the ISBN '75234212349'.");
+        Assert.isTrue(
+                sourceContains("98678"),
+                "Filtering by publisher 'Fuuu', the results should contain the ISBN '98678'.");
+    }
     
-    /* Add a book */
+    @Test
+    public void filterPublisherDoesNotReturnPartialMatches(){
+        go("/books/publisher/Fu");
+        Assert.isTrue(
+                sourceContains("for 0 books matching the query"),
+                "Filtering by publisher 'Fu' should produce exactly zero books.");
+    }
     
-    //TODO
+    @Test
+    public void filterPublicationYearReturnBooksFilteredByPublicationYear(){
+        go("/books/publicationyear/1995");
+        Assert.isTrue(
+                sourceContains("for 1 books matching the query"),
+                "Filtering by publication year '1995' should return exactly one book.");
+        Assert.isTrue(
+                sourceContains("98678"),
+                "Filtering by publication year '1995', the results should contain the ISBN '98678'");
+        
+    }
     
-    /* Edit a book */
+    @Test
+    public void filterPublicationYearDoesNotReturnPartialMatches(){
+        go("/books/publicationyear/19");
+        Assert.isTrue(
+                sourceContains("for 0 books matching the query"),
+                "Filtering by publication year '19' should return exactly zero books.");
+    }
     
-    //TODO
+    // Book details //
     
-    /* Import a book */
+    @Test
+    public void bookDetailsContainsTheRequiredInformation(){
+        go("/books/72579");
+        Assert.isTrue(
+                sourceContains("<img src=\"https://covers.openlibrary.org/b/isbn/72579-M.jpg\""),
+                "Book's details should include an image of the book's cover, retrieved from OpenLibrary.");
+        Assert.isTrue(
+                sourceContains("Introduction to circuitry"),
+                "Book's details should include the book's title.");
+        Assert.isTrue(
+                sourceContains("Cherryl A Rousel"),
+                "Book's details should include the author's name.");
+        Assert.isTrue(
+                sourceContains("<a href=\"/wepa/app/books/author/Cherryl A Rousel\""),
+                "Book's details should include a link all the books by the same author.");
+        Assert.isTrue(
+                sourceContains("72579"),
+                "Book's details should include the book's ISBN.");
+        Assert.isTrue(
+                sourceContains("Gaudeamus"),
+                "Book's details should include the publisher's name.");
+        Assert.isTrue(
+                sourceContains("<a href=\"/wepa/app/books/publisher/Gaudeamus\""),
+                "Book's details should include a link all the books by the same publisher.");
+        Assert.isTrue(
+                sourceContains("1999"),
+                "Book's details should include the publication year.");
+        Assert.isTrue(
+                sourceContains("<a href=\"/wepa/app/books/publicationyear/1999\""),
+                "Book's details should include a link all the books published during the same year.");
+    }
     
-    //TODO
+    // Add and edit books //
     
-    /* Register */
+    @Test
+    public void addBookAuthorizationLimitsUserAccess(){
+        go("/add");
+        Assert.isFalse(
+                sourceContains("Lieberry - Add a book"),
+                "Unauthorized users attempting to access the 'Add a book' page should be redirected to the 'Login' page.");
+        login();
+        Assert.isTrue(
+                sourceContains("Lieberry - Add a book"),
+                "Authorized users attempting to access the 'Add a book' page should see the requested page.");
+    }
     
-    //TODO
+    @Test
+    public void addBookPageContainsAllNecessaryInputs(){
+        login();
+        go("/add");
+        Assert.isTrue(
+                sourceContains("name=\"title\""),
+                "An element with the name 'title' should be present.");
+        Assert.isTrue(
+                sourceContains("name=\"authors[0]\""),
+                "An element with the name 'authors[0]' should be present.");
+        Assert.isTrue(
+                sourceContains("name=\"isbn\""),
+                "An element with the name 'isbn' should be present.");
+        Assert.isTrue(
+                sourceContains("name=\"publisher\""),
+                "An element with the name 'publisher' should be present.");
+        Assert.isTrue(
+                sourceContains("name=\"publicationYear\""),
+                "An element with the name 'publicationYear' should be present.");
+        Assert.isTrue(
+                sourceContains("type=\"submit\""),
+                "An element with the type 'submit' should be present.");
+        Assert.isTrue(
+                sourceContains("value=\"Add\""),
+                "An element with the value 'Add' should be present.");
+        Assert.isTrue(
+                sourceContains("value=\"Remove\""),
+                "An element with the value 'Remove' should be present.");
+    }
     
-    /* Usermanagement */
+    @Test
+    public void addBookSubmittingAndDeleting(){
+        login();
+        go("/add");
+        input("title", "TestBook");
+        input("author0", "TestAuthor");
+        input("isbn", "123456789");
+        input("publisher", "TestPublisher");
+        WebElement e = input("publicationYear", "2012");
+        e.submit();
+        Assert.isTrue(
+                driver.getTitle().equals("Lieberry - TestBook"),
+                "Submitting a book should take the user to that book's detailed view.");
+        Assert.isTrue(
+                sourceContains("TestBook"),
+                "Created book should have the provided title.");
+        Assert.isTrue(
+                sourceContains("TestAuthor"),
+                "Created book should have the provided author.");
+        Assert.isTrue(
+                sourceContains("123456789"),
+                "Created book should have the provided ISBN.");
+        Assert.isTrue(
+                sourceContains("TestPublisher"),
+                "Created book should have the provided publisher.");
+        Assert.isTrue(
+                sourceContains("2012"),
+                "Created book should have the provided author.");
+        go("/books/author/TestAuthor");
+        Assert.isTrue(
+                sourceContains("123456789"),
+                "Created book should be visible in library browser.");
+        
+        e = findById("command");
+        e.submit();
+        
+        go("/books/author/TestAuthor");
+        
+        Assert.isFalse(
+                sourceContains("123456789"),
+                "Pressing the 'Delete' button on the book listing should delete the book.");
+    }
     
-    //TODO
+    @Test
+    public void addBookSubmittingBookWithExistingIsbn(){
+        login();
+        go("/add");
+        input("title", "aaaaaaaaaaaaaaaaa");
+        input("author0", "TestAuthor");
+        input("isbn", "9780");
+        input("publisher", "TestPublisher");
+        WebElement e = input("publicationYear", "2012");
+        e.submit();
+        
+        Assert.isTrue(
+                sourceContains("The provided ISBN already exists in the database."),
+                "User should not be able to add a book with an ISBN that is already in use.");
+        
+        e = findByLinkText("here");
+        e.click();
+        Assert.isTrue(
+                sourceContains("Edit a book"),
+                "Clicking the link 'here' should take the user to the 'Edit a book' page.");
+        Assert.isTrue(
+                sourceContains("Mein Kompfy Chair"),
+                "The 'Edit a book' page should contain the information of the book with the same ISBN as the one entered on the 'Add a book' page.");
+        
+        go("/books");
+        Assert.isFalse(
+                sourceContains("aaaaaaaaaaaaaaaaa"),
+                "A book should NOT be present in the database after a failed insert.");
+    }
     
-    /* Admin */
+    @Test
+    public void editBookSavesTheEditedInfo(){
+        login();
+        go("/add");
+        input("title", "TestBook");
+        input("author0", "TestAuthor");
+        input("isbn", "111111");
+        input("publisher", "TestPublisher");
+        WebElement e = input("publicationYear", "2012");
+        e.submit();
+        
+        go("/edit/9780");
+        input("title", "EditTestBook");
+        input("author0", "EditTestAuthor");
+        input("isbn", "111111");
+        input("publisher", "EditTestPublisher");
+        e = input("publicationYear", "2012");
+        e.submit();
+        
+        Assert.isTrue(
+                driver.getTitle().equals("Lieberry - EditTestBook"),
+                "Submitting a book should take the user to that book's detailed view.");
+        Assert.isTrue(
+                sourceContains("EditTestBook"),
+                "Edited book should have the provided title.");
+        Assert.isTrue(
+                sourceContains("EditTestAuthor"),
+                "Edited book should have the provided author.");
+        Assert.isTrue(
+                sourceContains("111111"),
+                "Edited book should have the provided ISBN.");
+        Assert.isTrue(
+                sourceContains("EditTestPublisher"),
+                "Edited book should have the provided publisher.");
+        Assert.isTrue(
+                sourceContains("2012"),
+                "Edited book should have the provided author.");
+        go("/books/author/EditTestAuthor");
+        Assert.isTrue(
+                sourceContains("111111"),
+                "Edited book should be visible in library browser.");
+    }
+
+        //TODO: Add tests for dynamic adding and removing of author fields.
     
-    //TODO
+    // Import a book //
     
-    /* Helper methods */
+    @Test
+    public void importAuthorizationLimitsUserAccess(){
+        go("/import");
+        Assert.isFalse(
+                sourceContains("Lieberry - Import a book"),
+                "Unauthorized users attempting to access the 'Import a book' page should be redirected to the 'Login' page.");
+        login();
+        Assert.isTrue(
+                sourceContains("Lieberry - Import a book"),
+                "Authorized users attempting to access the 'Import a book' page should see the requested page.");
+    }
+    
+    @Test
+    public void importPageContainsRelevantFields(){
+        login();
+        go("/import");
+        Assert.isTrue(
+                sourceContains("name=\"isbn\""),
+                "The import page should contain an element with name 'isbn'.");
+    }
+    
+    @Test
+    public void importRequestingBookWithISBN(){
+        login();
+        go("/import");
+        WebElement e = input("import", "9780980200447");
+        e.submit();
+        
+        Assert.isTrue(
+                sourceContains("Add a book"),
+                "Requesting a book with the 'Import' form should present the user with the 'Add a book' form.");
+        Assert.isTrue(
+                sourceContains("Slow reading"),
+                "Importing the ISBN '9780980200447', the resulting page should contain the text 'Slow reading'.");
+        Assert.isTrue(
+                sourceContains("John Miedema"),
+                "Importing the ISBN '9780980200447', the resulting page should contain the text 'John Miedema'.");
+        Assert.isTrue(
+                sourceContains("9780980200447"),
+                "Importing the ISBN '9780980200447', the resulting page should contain the text '9780980200447'.");
+        Assert.isTrue(
+                sourceContains("Litwin Books"),
+                "Importing the ISBN '9780980200447', the resulting page should contain the text 'Litwin Books'.");
+        Assert.isTrue(
+                sourceContains("2009"),
+                "Importing the ISBN '9780980200447', the resulting page should contain the text '2009'.");
+    }
+    
+        //Unable to test non-existant ISBNs, OpenLibrary contains records with nonexistant ISBNs. See f.ex. openlibrary.org/isbn/1
+    
+    // Register //
+    
+        //TODO
+    
+    // Usermanagement //
+    
+        //TODO
+    
+    // Admin //
+    
+        //TODO
+    
+    // Helper methods //
+    
+    private void go(String url){
+        driver.get(baseUrl+url);
+    }
+    
+    private void goBase(){
+        driver.get(baseUrl);
+    }
     
     private void login(){
-        driver.get(baseUrl+"/app/login");
+        go("/login");
         WebElement e = findById("j_username");
         e.clear();
         e.sendKeys("mockUserForSeleniumThisIsBad");
@@ -556,6 +889,13 @@ public class LibrarySeleniumTest {
         e.clear();
         e.sendKeys("h63Eaa6Eq58X92IBccDFmYN9B1i0o7wtCwfOtEimmq2vqLKSzkU6gmpterjNpfLp");
         e.submit();
+    }
+    
+    private WebElement input(String id, String input){
+        WebElement e = findById(id);
+        e.clear();
+        e.sendKeys(input);
+        return e;
     }
     
     private Boolean titleContains(String query){
@@ -576,6 +916,85 @@ public class LibrarySeleniumTest {
     
     private WebElement findByName(String name){
         return driver.findElement(By.name(name));
+    }
+    
+    private void clearDatabase(){
+        bookRepository.deleteAll();
+    }
+    
+    private void initDatabase(){
+        Book b = new Book();
+        List<String> authors = new ArrayList<String>();
+        authors.add("Cherryl A Rousel");
+        b.setAuthors(authors);
+        b.setIsbn("72579");
+        b.setPublicationYear(1999);
+        b.setTitle("Introduction to circuitry");
+        b.setPublisher("Gaudeamus");
+        bookService.create(b);
+        
+        b = new Book();
+        authors = new ArrayList<String>();
+        authors.add("Abby Day");
+        b.setAuthors(authors);
+        b.setIsbn("978472579");
+        b.setPublicationYear(2000);
+        b.setTitle("A happy day, or a bidé day");
+        b.setPublisher("Gaudeamus");
+        bookService.create(b);
+        
+        b = new Book();
+        authors = new ArrayList<String>();
+        authors.add("Vaadolf Kitler");
+        b.setAuthors(authors);
+        b.setIsbn("9780");
+        b.setPublicationYear(2000);
+        b.setTitle("Mein Kompfy Chair");
+        b.setPublisher("Mofola");
+        bookService.create(b);
+        
+        b = new Book();
+        authors = new ArrayList<String>();
+        authors.add("Pelle H Ermanni");
+        b.setAuthors(authors);
+        b.setIsbn("75234212349");
+        b.setPublicationYear(2005);
+        b.setTitle("Kyllä se on oikeasti tämän värinen!");
+        b.setPublisher("Fuuu");
+        bookService.create(b);
+        
+        b = new Book();
+        authors = new ArrayList<String>();
+        authors.add("Pelle H Ermanni");
+        b.setAuthors(authors);
+        b.setIsbn("242134");
+        b.setPublicationYear(2005);
+        b.setTitle("Parhaat plättyreseptini");
+        b.setPublisher("Fuuu");
+        bookService.create(b);
+        
+        b = new Book();
+        authors = new ArrayList<String>();
+        authors.add("Michael Proven");
+        b.setAuthors(authors);
+        b.setIsbn("3452");
+        b.setPublicationYear(1998);
+        b.setTitle("Dropping emus: my studies on neuroscience");
+        b.setPublisher("Pingviini");
+        bookService.create(b);
+        
+        b = new Book();
+        authors = new ArrayList<String>();
+        authors.add("Vinski");
+        authors.add("Moto");
+        authors.add("Turbo");
+        authors.add("Santtu");
+        b.setAuthors(authors);
+        b.setIsbn("98678");
+        b.setPublicationYear(1995);
+        b.setTitle("\"Eiköhän se riitä, että se jyrää tän Leipiksen uuden dildon!\" ja muita sutkautuksia");
+        b.setPublisher("Fuuu");
+        bookService.create(b);
     }
 
 }

@@ -21,10 +21,10 @@
             <c:out value="${book.isbn}" />
             <br />
             Publisher: 
-            <c:out value="${book.publisher}" />
+            <a href="${pageContext.request.contextPath}/app/books/publisher/${book.publisher}"><c:out value="${book.publisher}" /></a>
             <br />
             Publication year: 
-            <c:out value="${book.publicationYear}" />
+            <a href="${pageContext.request.contextPath}/app/books/publicationyear/${book.publicationYear}"><c:out value="${book.publicationYear}" /></a>
             <br /> 
         </div>
 <%@include file="/WEB-INF/jspf/footer.jspf"  %>

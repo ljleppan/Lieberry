@@ -5,6 +5,7 @@
         
         <script>
             var rowNum = ${fn:length(book.authors)} -1;
+            if (rowNum == -1){ rowNum = 0};
             function addRow() {
                 rowNum++;
                 var row = ' <div id="author'+rowNum+'Grp" class="control-group">\n\
@@ -54,8 +55,8 @@
                         </label>
                         <div id="author0Div" class="controls">
                             <form:input id="author0" path="authors[0]" />
-                            <input type="button" class="btn" value="Add" onClick="addRow();" />
-                            <input type="button" class="btn" value="Remove" onClick="removeRow();" />
+                            <input type="button" class="btn" value="Add" id="addRow" onClick="addRow();" />
+                            <input type="button" class="btn" value="Remove" id="removeRow" onClick="removeRow();" />
                             <form:errors path="authors[0]" cssClass="help-inline" cssStyle="color: red;"/>
                         </div>
                     </div>
