@@ -1,7 +1,8 @@
-package wad.library.domain;
+package wad.library.domain.openlibrary;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class OpenLibraryBook {
@@ -12,6 +13,7 @@ public class OpenLibraryBook {
     private String subtitle;
     private List<OpenLibraryListElement> authors;
     private List<OpenLibraryListElement> publishers;
+    private Map<String, List<String>> identifiers;
     private String publish_date;
     
     @Override
@@ -81,4 +83,14 @@ public class OpenLibraryBook {
     public void setPublishers(List<OpenLibraryListElement> publishers) {
         this.publishers = publishers;
     }
+
+    public Map<String, List<String>> getIdentifiers() {
+        return identifiers;
+    }
+
+    public void setIdentifiers(Map<String, List<String>> identifiers) {
+        this.identifiers = identifiers;
+    }
+
+
 }

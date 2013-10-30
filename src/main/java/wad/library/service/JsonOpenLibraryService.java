@@ -4,21 +4,24 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import wad.library.domain.Book;
-import wad.library.domain.OpenLibraryBook;
-import wad.library.domain.OpenLibraryListElement;
+import wad.library.domain.openlibrary.OpenLibraryBook;
+import wad.library.domain.openlibrary.OpenLibrarySearchResult;
+import wad.library.domain.openlibrary.OpenLibrarySearchResultList;
+import wad.library.util.BookConverter;
 
 @Service
 public class JsonOpenLibraryService implements OpenLibraryService {
+    
+    Logger log = LoggerFactory.getLogger(JsonOpenLibraryService.class);
     
     private RestTemplate restTemplate;
     private ObjectMapper mapper;
@@ -31,69 +34,120 @@ public class JsonOpenLibraryService implements OpenLibraryService {
     }
 
     @Override
-    public Book retrieve(String isbn) {
-        System.out.println("Retrieving "+isbn);
+    public Book retrieveByIsbn(String isbn) {
+        if(isbn.equals("")){
+            return null;
+        }
         String url = "http://openlibrary.org/api/books?bibkeys=ISBN:"+isbn+"&jscmd=data&format=json";
-        String json = restTemplate.getForObject(url, String.class);
+        String json = fetchJson(url);
+        List<Book> books = retrieveMultipleBooks(url, 1, 1);
+        return books.get(0);
+    }
+
+    @Override
+    public List<Book> retrieveByAuthor(String query, int pageNumber, int perPage) {
+        if(query.equals("")){
+            return null;
+        }
+        String url = "http://openlibrary.org/search.json?author="+query;
+        return retrieveMultipleBooks(url, pageNumber, perPage);  
+    }
+
+    @Override
+    public List<Book> retrieveByTitle(String query, int pageNumber, int perPage) {
+        if(query.equals("")){
+            return null;
+        }
+        String url = "http://openlibrary.org/search.json?title="+query;
+        return retrieveMultipleBooks(url, pageNumber, perPage);        
+    }
+    
+    private List<Book> retrieveMultipleBooks(String url, int pageNumber, int perPage){
+        String json = fetchJson(url);
+        System.out.println(json);
         
         /* No matching book in OL */
         if (json.equals("{}")){
-            return new Book();
+            return null;
         }
         
-        System.out.println("Retrieved json string: "+json);
-        try {
-            System.out.println("Binding json string to olBook map");
-            Map<String, OpenLibraryBook> olBooks = mapper.readValue(json, new TypeReference<Map<String, OpenLibraryBook>>(){});
-            System.out.println("Result map: "+olBooks);
-            return olBookToBook(olBooks.get("ISBN:"+isbn), isbn);
-        } catch (IOException ex) {
-            System.out.println("Virhe: "+ex);
-            Logger.getLogger(JsonOpenLibraryService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return new Book();
-    }    
-
-    private Book olBookToBook(OpenLibraryBook olBook, String isbn) {
-        Book book = new Book();
-        
-        book.setIsbn(isbn);
-        
-        String title = "";
-        if (olBook.getTitle() != null){
-            title = olBook.getTitle();
-        }
-        if (olBook.getSubtitle() != null){
-            title = title+olBook.getSubtitle();
-        }
-        book.setTitle(title);
-        
-        if (olBook.getAuthors() != null){
-            List<String> authors = new ArrayList<String>();
-            for (OpenLibraryListElement author : olBook.getAuthors()){
-                authors.add(author.getName());
+        try{
+            OpenLibrarySearchResultList results = parseToOpenLibrarySearchResultList(json);
+            List<String> editionKeys = getEditionKeysFromResults(results);
+            
+            int startIndex = perPage * pageNumber - 1;
+            int endIndex = startIndex + perPage;
+            
+            if (startIndex >= editionKeys.size()){
+                return null;
             }
-            book.setAuthors(authors);
+            if (endIndex >= editionKeys.size()){
+                endIndex = editionKeys.size()-1;
+            }
+            
+            List<String> currPageEditionKeys = editionKeys.subList(startIndex, endIndex);
+            
+            List<OpenLibraryBook> olBooks = retrieveByEditionKeys(currPageEditionKeys);
+            
+            List<Book> books = new ArrayList<Book>();
+            for( OpenLibraryBook olBook : olBooks){
+                Book book = BookConverter.olBookToBook(olBook);
+                books.add(book);
+            }
+            
+            return books;
+        } 
+        catch( IOException ex){
+            return null;
         }
+    }
+    
+    private List<OpenLibraryBook> retrieveByEditionKeys(List<String> keys) throws IOException{
+        String url = createUrlFromKeyList(keys);
+        String json = fetchJson(url.toString());
+        Map<String, OpenLibraryBook> map = parseToOpenLibraryBookMap(json);
         
-        if (olBook.getPublishers() != null && !olBook.getPublishers().isEmpty()){
-            String publisher = olBook.getPublishers().get(0).getName();
-            book.setPublisher(publisher);
+        List<OpenLibraryBook> olBooks = new ArrayList<OpenLibraryBook>();
+        for (OpenLibraryBook olBook : map.values()){
+            olBooks.add(olBook);
         }
-        
-        if (olBook.getPublish_date() != null){
-            String pubDate = olBook.getPublish_date();
-            pubDate = pubDate.substring(pubDate.length() - 4);
-            System.out.println("pubdate = "+pubDate);
-            try{
-                book.setPublicationYear(Integer.parseInt(pubDate));
-            } catch (Exception ex){
-                System.out.println("Exception: "+ex);
-                book.setPublicationYear(new GregorianCalendar().get(GregorianCalendar.YEAR));
+        return olBooks;
+    }
+    
+    private String fetchJson(String url){
+        return restTemplate.getForObject(url, String.class);
+    }
+    
+    private List<String> getEditionKeysFromResults(OpenLibrarySearchResultList results){
+        List<String> keys = new ArrayList<String>();
+        for (OpenLibrarySearchResult result : results.getDocs()){
+            for (String key : result.getEdition_key()){
+                if (!keys.contains(key)){
+                    keys.add(key);
+                }
             }
         }
+        return keys;
+    }
+    
+    private Map<String, OpenLibraryBook> parseToOpenLibraryBookMap(String json) throws IOException{
+        return mapper.readValue(json, new TypeReference<Map<String, OpenLibraryBook>>(){});
+    }
+    
+    private OpenLibrarySearchResultList parseToOpenLibrarySearchResultList(String json) throws IOException{
+        return mapper.readValue(json, OpenLibrarySearchResultList.class);
+    }
 
-        System.out.println("Transformed given olBook to following book: "+book);
-        return book;
+    private String createUrlFromKeyList(List<String> keys) {
+        StringBuilder url = new StringBuilder();
+        url.append("http://openlibrary.org/api/books?bibkeys=");
+        url.append("OLID:");
+        url.append(keys.get(0));
+        for (int i = 1; i < keys.size(); i++) {
+            url.append(",OLID:");
+            url.append(keys.get(i));
+        }
+        url.append("&jscmd=data&format=json");
+        return url.toString();
     }
 }

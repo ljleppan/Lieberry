@@ -77,7 +77,7 @@
                             <th></th>
                             <th>Cover</th>
                             <th>Title</th>
-                            <th>Author</th>
+                            <th>Authors</th>
                             <th>ISBN</th>
                             <th>Publisher</th>
                             <th>Publication year</th>
@@ -130,7 +130,7 @@
                             <th></th>
                             <th>Cover</th>
                             <th>Title</th>
-                            <th>Author</th>
+                            <th>Authors</th>
                             <th>ISBN</th>
                             <th>Publisher</th>
                             <th>Publication year</th>

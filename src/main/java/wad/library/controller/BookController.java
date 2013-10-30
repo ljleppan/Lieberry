@@ -3,6 +3,7 @@ package wad.library.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import wad.library.domain.Book;
 import wad.library.service.BookService;
 import wad.library.service.OpenLibraryService;
+import wad.library.util.IsbnConverter;
 
 @Controller
 public class BookController {
@@ -123,15 +125,25 @@ public class BookController {
     
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="import", method=RequestMethod.POST)
-    public String findBookToImport(Model model, @RequestParam String isbn){
+    public String findBooksToImport(Model model, @RequestParam String query, @RequestParam String field){
         System.out.println("POST for import");
-        String newIsbn = isbn.replaceAll("[^0-9]", "");
-        if (isbn.toLowerCase().endsWith("x")){
-            newIsbn = newIsbn.concat("X");
+        List<Book> books;
+        if (field.equals("isbn")){
+            String isbn = IsbnConverter.stringToIsbn(query);
+            Book book = openLibraryService.retrieveByIsbn(isbn);
+            model.addAttribute("book", book);
+            return "add";
         }
-        Book book = openLibraryService.retrieve(newIsbn);
-        System.out.println("Retrieved book "+ book);
-        model.addAttribute("book", book);
-        return "add";
+        else if (field.equals("author")){
+            books = openLibraryService.retrieveByAuthor(query, 1, 5);
+        }
+        else{
+            books = openLibraryService.retrieveByTitle(query, 1, 5);
+        }
+        
+        
+
+        model.addAttribute("books", books);
+        return "importresults";
     }
 }

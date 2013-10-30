@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package wad.library.domain;
+package wad.library.domain.openlibrary;
 
 
 public class OpenLibraryListElement {

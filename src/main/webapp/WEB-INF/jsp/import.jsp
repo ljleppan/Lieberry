@@ -5,26 +5,34 @@
 
 <%@include file="/WEB-INF/jspf/header.jspf"  %>
 
-        <div class="jumbotron ">
+        <div class="hero-unit text-center ">
             <h1>Import a book</h1>
-            <p class="lead">Import a book from Open Library by entering its ISBN number.</p>
-        </div>
+            <p class="lead">Import book(s) from Open Library.</p>
 
-        <div>
-            <form action="${pageContext.request.contextPath}/app/import" method="POST" class="form-horizontal">
-                <div class="control-group">
-                    <label for="isbn" class="control-label">
-                        ISBN
-                    </label>
-                    <div class="controls">
-                        <input id="import" type="text" name="isbn" />
-                        <span class="help-inline">Accepted forms are f.ex. "10-2023-123123-X" and "9780980200447"</span>
+            <div>
+                <form action="${pageContext.request.contextPath}/app/import" method="POST" class="form-horizontal">
+                    <div class="controls-group">
+                        <div class="controls-row">
+                            <input type="text" name="query" class="search-query input-xlarge" />
+                        </div>
+
+                        <div class="controls-row">                   
+                            <label for="title" class="radio inline">Title</label>
+                            <input type="radio" name="field" id="title" value="title" checked="true"/> 
+
+                            <label for="author" class="radio inline">Author</label>
+                            <input type="radio" name="field" id="author" value="author" />
+
+                            <label for="isbn" class="radio inline">ISBN</label>
+                            <input type="radio" name="field" id="isbn" value="isbn" />
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-actions">
-                    <input value="Import" type="submit" class="btn btn-large btn-primary"/>
-                </div>
-            </form>
+
+                    <div class="controls-row">
+                        <br />
+                        <input value="Search" type="submit" class="btn btn-large btn-primary"/>
+                    </div>
+                </form>
+            </div>
         </div>
 <%@include file="/WEB-INF/jspf/footer.jspf"  %>
