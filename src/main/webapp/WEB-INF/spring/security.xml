@@ -19,7 +19,11 @@
       <sec:logout logout-url="/app/logout" logout-success-url="/app/" />
     </sec:http>
 
-
+    <sec:authentication-manager>
+        <sec:authentication-provider user-service-ref="userService" />
+    </sec:authentication-manager>
+    
+<!--
     <sec:authentication-manager>
         <sec:authentication-provider>
             <sec:user-service>
@@ -29,4 +33,5 @@
             </sec:user-service>
         </sec:authentication-provider>
     </sec:authentication-manager>
+    -->
 </beans>

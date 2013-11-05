@@ -1,7 +1,7 @@
 <%@include file="/WEB-INF/jspf/taglib.jspf" %>
 <%@include file="/WEB-INF/jspf/head.jspf"  %>
 
-        <title>Lieberry - Login" /></title>
+        <title>Lieberry - Login</title>
 
 <%@include file="/WEB-INF/jspf/header.jspf"  %>
 

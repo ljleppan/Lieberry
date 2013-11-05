@@ -37,6 +37,8 @@
         <div>
             <c:choose>
                 <c:when test="${not empty books}">
+                    <p>Only up to ${maxResults} books are shown per query. Please revise you query if the book you are looking for is not shown.</p>
+                    
                     <table class="table">
                         <thead>
                             <tr>
@@ -87,22 +89,6 @@
                             </tr>
                         </thead>
                     </table>
-                    <div class="span12">
-                        <div class="span1 offset3">
-                            <c:if test="${pageNumber > 1}">
-                                <a href="${pageContext.request.contextPath}/app/import?pageNumber=${pageNumber - 1}" class="btn">Prev</a>
-                            </c:if>
-                        </div>
-                        <div class="span1 offset1 text-center">
-                            <span class="text-center">Page</span><br />
-                            <span class="text-center">${pageNumber} of ${totalPages}</span>
-                        </div>
-                        <div class="span1 offset1">
-                            <c:if test="${pageNumber < totalPages}">
-                                <a href="${pageContext.request.contextPath}/app/import?pageNumber=${pageNumber + 1}" class="btn">Next</a>
-                            </c:if>
-                        </div>
-                    </div>
                 </c:when>
                 <c:otherwise>
                     <p>No matching results.</p>

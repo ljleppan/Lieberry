@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package wad.library.util;
 
 import java.util.ArrayList;
@@ -13,7 +8,16 @@ import wad.library.domain.openlibrary.OpenLibraryBook;
 import wad.library.domain.openlibrary.OpenLibraryListElement;
 
 
+/**
+ * Converts instances of {@link OpenLibraryBook} to instances of {@link Book}.
+ * @author Loezi
+ */
 public class BookConverter {
+    /**
+     * Converts an instance of {@link OpenLibraryBook} to an instance of {@link Book}.
+     * @param olBook    An instance of {@link OpenLibraryBook}.
+     * @return          An instance of {@link Book}.
+     */
     public static Book olBookToBook(OpenLibraryBook olBook) {
         Book book = new Book();
         

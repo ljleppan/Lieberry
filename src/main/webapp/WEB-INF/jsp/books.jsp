@@ -143,7 +143,7 @@
                 <div class="span12">
                     <div class="span1 offset3">
                         <c:if test="${pageNumber > 1}">
-                            <a href="${pageContext.request.contextPath}/app/books?pageNumber=${pageNumber - 1}" class="btn">Prev</a>
+                            <a href="${requestScope['javax.servlet.forward.request_uri']}?pageNumber=${pageNumber - 1}" class="btn">Prev</a>
                         </c:if>
                     </div>
                     <div class="span1 offset1 text-center">
@@ -152,7 +152,7 @@
                     </div>
                     <div class="span1 offset1">
                         <c:if test="${pageNumber < totalPages}">
-                            <a href="${pageContext.request.contextPath}/app/books?pageNumber=${pageNumber + 1}" class="btn">Next</a>
+                            <a href="${requestScope['javax.servlet.forward.request_uri']}?pageNumber=${pageNumber + 1}" class="btn">Next</a>
                         </c:if>
                     </div>
                 </div>

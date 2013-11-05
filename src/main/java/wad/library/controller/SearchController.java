@@ -14,6 +14,10 @@ import wad.library.domain.Book;
 import wad.library.service.BookService;
 import wad.library.service.OpenLibraryService;
 
+/**
+ * Controller for search related requests.
+ * @author Loezi
+ */
 @Controller
 public class SearchController {
 
@@ -23,6 +27,24 @@ public class SearchController {
     @Autowired
     OpenLibraryService openLibraryService;
 
+    /**
+     * DO NOT CALL DIRECTLY
+     * 
+     * Searches the database and return a view of the results.
+     * 
+     * <p>When searching for an ISBN or a year, the results only contain an exact match.
+     * For other kinds of queries, results contain all books for which the queried
+     * field contains the queried text. Results are paged and only the requested page is
+     * shown.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param field The field to be queried.
+     * @param query The query string.
+     * @param pageNumber The page of results to be shown. If not specified, the first {@link BookController.#PAGE_SIZE} results are shown.
+     * @return "books", populated by the requested page of the search results.
+     */
     @RequestMapping(value = "search", method = RequestMethod.POST)
     public String search(
             Model model,
@@ -56,6 +78,20 @@ public class SearchController {
         return "books";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the exact title of the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
     @RequestMapping(value = "books/title/{query}", method=RequestMethod.GET)
     public String findByTitle(
             Model model,
@@ -70,6 +106,20 @@ public class SearchController {
         return "books";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the exact author of the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
     @RequestMapping(value = "books/author/{query}", method=RequestMethod.GET)
     public String findByAuthor(
             Model model,
@@ -85,6 +135,20 @@ public class SearchController {
         return "books";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the exact publisher of the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
     @RequestMapping(value = "books/publisher/{query}", method=RequestMethod.GET)
     public String findByPublisher(
             Model model,
@@ -99,6 +163,20 @@ public class SearchController {
         return "books";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the exact publication year of the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
     @RequestMapping(value = "books/publicationyear/{query}", method=RequestMethod.GET)
     public String findByPublicationYear(
             Model model,

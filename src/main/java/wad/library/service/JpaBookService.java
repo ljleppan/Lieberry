@@ -15,12 +15,19 @@ import wad.library.domain.Book;
 import wad.library.repository.BookRepository;
 
 
+/**
+ * A JPA-based impelementation of the {@link BookService} interface.
+ * @author Loezi
+ */
 @Service
 public class JpaBookService implements BookService {
     
     @Autowired 
     private BookRepository bookRepository;
     
+    /**
+     * A method that populates the database with example books for testing and demoing.
+     */
     @PostConstruct
     private void init(){
         Book b = new Book();
@@ -97,12 +104,31 @@ public class JpaBookService implements BookService {
         bookRepository.save(b);
     }
 
+
+    /**
+     * Return a single book matching the given ISBN.
+     * 
+     * @param isbn The ISBN to search for.
+     * @return A single book matching the search.
+     */
     @Override
     @Transactional(readOnly=true)
     public Book findByIsbn(String isbn) {
         return bookRepository.findOne(isbn);
     }
 
+    /**
+     * Return all books where the title contains the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param name The (partial) title
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAllByTitleLike(String name, int pageNumber, int pageSize) {
@@ -110,12 +136,36 @@ public class JpaBookService implements BookService {
         return bookRepository.findByTitleContaining(name, pageRequest);
     }
     
+    /**
+     * Return all books where the author's name contains the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param author The query string.
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     public Page<Book> findAllByAuthorLike(String author, int pageNumber, int pageSize) {
         PageRequest pageRequest = new PageRequest(pageNumber - 1, pageSize, Sort.Direction.DESC, "title");
         return bookRepository.findAuthorsNamesContaining(author, pageRequest);
     }
 
+    /**
+     * Return all books where the publisher's name contains the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param publisher The query string.
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAllByPublisherLike(String publisher, int pageNumber, int pageSize) {
@@ -123,6 +173,18 @@ public class JpaBookService implements BookService {
         return bookRepository.findByPublisherContaining(publisher, pageRequest);
     }
     
+    /**
+     * Return all books where the ISBN contains the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param isbn The query string.
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAllByIsbnLike(String isbn, int pageNumber, int pageSize) {
@@ -130,6 +192,17 @@ public class JpaBookService implements BookService {
         return bookRepository.findByIsbnContaining(isbn, pageRequest);
     }
 
+    /**
+     * Return all books.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param pageNumber    The number of the page that should be returned.
+     * @param pageSize      The number of results per page.
+     * @return              A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAll(int pageNumber, int pageSize) {
@@ -137,30 +210,64 @@ public class JpaBookService implements BookService {
         return (Page<Book>) bookRepository.findAll(pageRequest);
     }
 
+    /**
+     * Saves a book.
+     * 
+     * @param book  The updated data.
+     * @return      The saved book.
+     */
     @Override
     @Transactional(readOnly=false)
     public Book update(Book book) {
         return bookRepository.save(book);
     }
 
+    /**
+     * Creates a new book.
+     * 
+     * @param book  The book to be created.
+     * @return      The created book.
+     */
     @Override
     @Transactional(readOnly=false)
     public Book create(Book book) {
         return bookRepository.save(book);
     }
 
+    /**
+     * Deletes an existing book.
+     * 
+     * @param book  The book to delete.
+     */
     @Override
     @Transactional(readOnly=false)
     public void delete(Book book) {
         bookRepository.delete(book);
     }
 
+    /**
+     * Deletes a book based on its ISBN.
+     * 
+     * @param isbn  The ISBN of the book to delete.
+     */
     @Override
     @Transactional(readOnly=false)
     public void delete(String isbn) {
         bookRepository.delete(isbn);
     }
 
+    /**
+     * Return all books where the title equals to the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param name The query string.
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAllByTitle(String name, int pageNumber, int pageSize) {
@@ -168,6 +275,18 @@ public class JpaBookService implements BookService {
         return bookRepository.findByTitle(name, pageRequest);
     }
 
+    /**
+     * Return all books where the author's name equals to the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param author The query string.
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAllByAuthor(String author, int pageNumber, int pageSize) {
@@ -175,6 +294,18 @@ public class JpaBookService implements BookService {
         return bookRepository.findByAuthor(author, pageRequest);
     }
 
+    /**
+     * Return all books where the publisher's name equals to the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param publisher The query string.
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAllByPublisher(String publisher, int pageNumber, int pageSize) {
@@ -182,6 +313,18 @@ public class JpaBookService implements BookService {
         return bookRepository.findByPublisher(publisher, pageRequest);
     }
 
+    /**
+     * Return all books where the publication year equals to the query.
+     * 
+     * <p>Results are paged and only the specified page is returned. The returned
+     * list will be empty if there are not enough results to populate the requested 
+     * page.</p>
+     * 
+     * @param year The query.
+     * @param pageNumber The number of the page that should be returned.
+     * @param pageSize The number of results per page.
+     * @return A {@link org.springframework.data.domain.Page} of the search results.
+     */
     @Override
     @Transactional(readOnly=true)
     public Page<Book> findAllByPublicationYear(int year, int pageNumber, int pageSize) {

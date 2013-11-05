@@ -5,18 +5,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * The default controller.
+ * @author Loezi
+ */
 @Controller
 public class DefaultController {
     
+    /**
+     * Displays the main menu for any requests not matching other mappings.
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @return "menu".
+     */
     @RequestMapping("*")
     public String handleDefault(Model model) {
-        boolean loggedIn;
         System.out.println(SecurityContextHolder.getContext().getAuthentication().toString());
-        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()){
-            model.addAttribute("loggedIn", false);
-        } else {
-            model.addAttribute("loggedIn", false);
-        }
         return "menu";
     }
 }
