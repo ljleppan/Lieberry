@@ -22,7 +22,6 @@ public class DefaultController {
      */
     @RequestMapping("*")
     public String handleDefault(Model model) {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().toString());
         return "menu";
     }
 }

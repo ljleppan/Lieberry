@@ -66,10 +66,13 @@ public class BookController {
         System.out.println("GET to books");
         
         Page<Book> page = bookService.findAll(pageNumber, PAGE_SIZE);
-        model.addAttribute("books", page.getContent());
-        model.addAttribute("pageNumber", pageNumber);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
+        
+        if (page != null){
+            model.addAttribute("books", page.getContent());
+            model.addAttribute("pageNumber", pageNumber);
+            model.addAttribute("totalPages", page.getTotalPages());
+            model.addAttribute("totalItems", page.getTotalElements());
+        }
         
         return "books";
     }
