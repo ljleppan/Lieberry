@@ -15,6 +15,7 @@ public class OpenLibraryBook {
     private List<OpenLibraryListElement> publishers;
     private Map<String, List<String>> identifiers;
     private String publish_date;
+    private String key;
     
     @Override
     public String toString(){
@@ -24,7 +25,8 @@ public class OpenLibraryBook {
                 "subtitle: "+this.subtitle+"\n"+
                 "authors: "+this.authors+"\n"+
                 "publishers: "+this.getPublishers()+"\n"+
-                "publish_date: "+this.publish_date;
+                "publish_date: "+this.publish_date+"\n"+
+                "edition_key: " +this.key;
         return s;
     }
 
@@ -90,6 +92,14 @@ public class OpenLibraryBook {
 
     public void setIdentifiers(Map<String, List<String>> identifiers) {
         this.identifiers = identifiers;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
 

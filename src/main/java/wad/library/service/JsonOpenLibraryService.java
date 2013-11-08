@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +55,8 @@ public class JsonOpenLibraryService implements OpenLibraryService {
         }
         String url = "http://openlibrary.org/api/books?bibkeys=ISBN:"+isbn+"&jscmd=data&format=json";
         String json = fetchJson(url);
-        List<Book> books = retrieveMultipleBooks(url, 1);
-        return books.get(0);
+        return retrieveSingleBook(url);
+
     }
 
     /**
@@ -118,23 +119,15 @@ public class JsonOpenLibraryService implements OpenLibraryService {
         try{
             OpenLibrarySearchResultList results = parseToOpenLibrarySearchResultList(json);
             results.setDocs(trimResults(results, limit));
-            System.out.println("GOT RESULTS");
             List<String> editionKeys = getEditionKeysFromResults(results, limit);
-            System.out.println("PASSED LIST ONWARDS");
-            
-            System.out.println("FOR MY PAGE, I WANT STUFF FROM 0 TO "+limit);
-            
-            System.out.println("THAT'S ALL THIS SHIT: "+editionKeys);
             
             List<OpenLibraryBook> olBooks = retrieveByEditionKeys(editionKeys);
-            System.out.println("WHICH MEANS THESE SHIT-FORMAT BOOKS: "+olBooks);
             
             List<Book> books = new ArrayList<Book>();
             for( OpenLibraryBook olBook : olBooks){
                 Book book = BookConverter.olBookToBook(olBook);
                 books.add(book);
             }
-            System.out.println("WHICH CONVERT TO THESE GOOD-FORMAT BOOKS: "+books);
             
             return books;
         } 
@@ -157,6 +150,7 @@ public class JsonOpenLibraryService implements OpenLibraryService {
         List<OpenLibraryBook> olBooks = new ArrayList<OpenLibraryBook>();
         for (OpenLibraryBook olBook : map.values()){
             olBooks.add(olBook);
+            System.out.println(olBook);
         }
         return olBooks;
     }
@@ -180,33 +174,24 @@ public class JsonOpenLibraryService implements OpenLibraryService {
         int amount = 0;
         Set<String> keys = new TreeSet<String>();
         
-        System.out.println("GETTING STUFF FROM THESE THINGS: "+ results.getDocs());
-        
-        for (OpenLibrarySearchResult result : results.getDocs()){
+        List<OpenLibrarySearchResult> docs = results.getDocs(); 
+        for (OpenLibrarySearchResult result : docs){
             if (result != null 
                     && amount < limit 
                     && result.getEdition_key() != null){
                 
-                System.out.println("GETTING STUFF FROM "+result);
-                System.out.println("IT HAS THIS STUFF: "+result.getEdition_key());
-                
                 for (String key : result.getEdition_key()){
-                    System.out.println("FOUND KEY: "+ key);
                     if (key != null 
                             && amount < limit 
                             && !keys.contains(key)){
-                        System.out.println("ADDED KEY!");
                         keys.add(key);
                         amount++;
                     }
                 }
             }
         }
-        System.out.println("FINISHED GETTING STUFF");
-        System.out.println("GOT ALL THIS: " + keys);
         List<String> keysList = new ArrayList<String>();
         keysList.addAll(keys);
-        System.out.println("MADE IT INTO THIS LIST: " + keysList);
         return keysList;
     }
     
@@ -262,5 +247,31 @@ public class JsonOpenLibraryService implements OpenLibraryService {
             docs = docs.subList(0, number + 1);
         }
         return docs;
+    }
+
+    @Override
+    public Book retrieveByOpenLibraryId(String id) {
+        if(id.equals("")){
+            return null;
+        }
+        
+        StringBuilder url = new StringBuilder();
+        url.append("http://openlibrary.org/api/books?bibkeys=OLID:");
+        url.append(id);
+        url.append("&jscmd=data&format=json");
+        
+        return retrieveSingleBook(url.toString());
+    }
+    
+    private Book retrieveSingleBook(String url){
+        try {
+            String json = fetchJson(url);
+            Map<String, OpenLibraryBook> results = parseToOpenLibraryBookMap(json);
+            OpenLibraryBook result = (OpenLibraryBook) results.values().toArray()[0];
+            return BookConverter.olBookToBook(result);
+            
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }

@@ -5,7 +5,7 @@
         
         <script>
             var rowNum = ${fn:length(book.authors)} -1;
-            if (rowNum == -1){ rowNum = 0};
+            if (rowNum == -1){ rowNum = 0;}
             function addRow() {
                 rowNum++;
                 var row = ' <div id="author'+rowNum+'Grp" class="control-group">\n\
@@ -33,6 +33,9 @@
             <p class="lead">All fields must be filled.</p>
             <c:if test="${not empty isbnInUse}">
                 <p class="error" style="color: red; font-weight: bold;">The provided ISBN already exists in the database. Press <a href="${pageContext.request.contextPath}/app/edit/${book.isbn}">here</a> to edit the existing book or provide an ISBN that is not in the database.</p>
+            </c:if>
+            <c:if test="${not empty isbnNull}">
+                <p class="error" style="color: red; font-weight: bold;">No ISBN was found. You need to provide an ISBN for all the books.</p>
             </c:if>
         </div>
 

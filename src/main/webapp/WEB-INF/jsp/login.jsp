@@ -10,7 +10,11 @@
             <c:if test="${not empty error}">
 		<div class="alert alert-error">
 			Your login attempt was not successful, try again.<br /> 
-                        Error: ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
+		</div>
+            </c:if>
+            <c:if test="${not empty message}">
+		<div class="alert alert-success ">
+                    <c:out value="${message}" /> <br /> 
 		</div>
             </c:if>
         </div>

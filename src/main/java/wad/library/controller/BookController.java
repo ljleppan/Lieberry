@@ -283,4 +283,22 @@ public class BookController {
         model.addAttribute("books", books);
         return "importresults";
     }
+    
+    @PreAuthorize("hasAnyRole('admin', 'user')")
+    @RequestMapping(value="import/{id}", method=RequestMethod.POST)
+    public String importBook(Model model, @PathVariable String id){
+        Book book = openLibraryService.retrieveByOpenLibraryId(id);
+        if (bookService.findByIsbn(book.getIsbn()) != null){
+            model.addAttribute("isbnInUse", true);
+            model.addAttribute("book", book);
+            return "add";
+        }
+        if (book.getIsbn() == null){
+            model.addAttribute("isbnNull", true);
+            model.addAttribute("book", book);
+            return "add";
+        }
+        bookService.create(book);
+        return "redirect:/app/books/"+book.getIsbn();
+    }
 }

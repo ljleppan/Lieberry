@@ -21,6 +21,12 @@ public class BookConverter {
     public static Book olBookToBook(OpenLibraryBook olBook) {
         Book book = new Book();
         
+        String olId = "";
+        if (olBook.getKey() != null){
+            olId = olBook.getKey().substring(olBook.getKey().lastIndexOf("/")+1);
+        }
+        book.setOlId(olId);
+        
         String isbn = "";
         if (olBook.getIdentifiers().containsKey("isbn_10")){
             isbn = olBook.getIdentifiers().get("isbn_10").get(0);

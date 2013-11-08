@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -51,7 +52,10 @@ public class Book implements Serializable {
     
     @Min(0)
     @Column(name="PUBLICATIONYEAR")
-    private int publicationYear = new GregorianCalendar().get(GregorianCalendar.YEAR); 
+    private int publicationYear = new GregorianCalendar().get(GregorianCalendar.YEAR);
+    
+    @Transient
+    private String olId;
     
     @Override
     public String toString(){
@@ -59,7 +63,8 @@ public class Book implements Serializable {
                 "title: "+this.title+"\n"+
                 "authors: "+this.authors.get(0)+"\n"+
                 "publisher: "+this.publisher+"\n"+
-                "publicationYear: "+this.publicationYear;
+                "publicationYear: "+this.publicationYear+"\n"+
+                "olID: "+this.olId;
     }
 
     /**
@@ -143,5 +148,19 @@ public class Book implements Serializable {
      */
     public int getPublicationYear(){
         return this.publicationYear;
+    }
+
+    /**
+     * @return the oldID
+     */
+    public String getOlId() {
+        return olId;
+    }
+
+    /**
+     * @param oldID the oldID to set
+     */
+    public void setOlId(String olId) {
+        this.olId = olId;
     }
 }

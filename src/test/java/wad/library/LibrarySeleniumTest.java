@@ -222,7 +222,7 @@ public class LibrarySeleniumTest {
                 );
         
         Assert.isTrue(
-                sourceContains("Bad credentials"),
+                sourceContains("not successful"),
                 "Login page should contain an error after a failed login.");
     }
     
@@ -248,7 +248,7 @@ public class LibrarySeleniumTest {
     public void browseLibraryEditAndDeleteNotShownForEveryone(){
         go("/books");
         Assert.isFalse(
-                sourceContains("Edit"),
+                sourceContains("/wepa/app/edit/"),
                 "The 'Edit' button should NOT be visible without logging in.");
         Assert.isFalse(
                 sourceContains("Delete"),
@@ -825,20 +825,32 @@ public class LibrarySeleniumTest {
         login();
         go("/import");
         Assert.isTrue(
-                sourceContains("name=\"isbn\""),
+                sourceContains("name=\"query\""),
+                "The import page should contain an element with name 'query'.");
+        Assert.isTrue(
+                sourceContains("id=\"title\""),
+                "The import page should contain an element with id 'title'.");
+        Assert.isTrue(
+                sourceContains("id=\"author\""),
+                "The import page should contain an element with id 'author'.");
+        Assert.isTrue(
+                sourceContains("id=\"isbn\""),
                 "The import page should contain an element with name 'isbn'.");
+        Assert.isTrue(
+                sourceContains("type=\"submit\""),
+                "The import page should contain an element with type 'submit'.");
+        
     }
     
     @Test
     public void importRequestingBookWithISBN(){
         login();
         go("/import");
-        WebElement e = input("import", "9780980200447");
+        WebElement e = input("query", "9780980200447");
+        e = findById("isbn");
+        e.click();
         e.submit();
         
-        Assert.isTrue(
-                sourceContains("Add a book"),
-                "Requesting a book with the 'Import' form should present the user with the 'Add a book' form.");
         Assert.isTrue(
                 sourceContains("Slow reading"),
                 "Importing the ISBN '9780980200447', the resulting page should contain the text 'Slow reading'.");

@@ -20,7 +20,7 @@
     </sec:http>
 
     <sec:authentication-manager>
-        <sec:authentication-provider user-service-ref="userService" />
+        <sec:authentication-provider user-service-ref="jpaUserService" />
     </sec:authentication-manager>
     
 <!--

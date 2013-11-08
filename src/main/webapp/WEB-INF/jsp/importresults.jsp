@@ -65,13 +65,15 @@
                                 <td><c:out value="${books[index].isbn}"/></td>
                                 <td><c:out value="${books[index].publisher}"/></td>
                                 <td><c:out value="${books[index].publicationYear}"/></td>
+                                <td></td>
                                 <td>
                                     <c:choose>
                                         <c:when test="$inLibrary[index]">
                                             <span style="color: green; font-weight: bold;">In library</span>
                                         </c:when>
                                         <c:otherwise>
-                                            <a href="#">Add</a>
+                                            
+                                            <form:form action="${pageContext.request.contextPath}/app/import/${books[index].olId}" method="POST"><input class="btn" type="submit" value="Add"></form:form>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

@@ -10,6 +10,14 @@ import wad.library.domain.Book;
  */
 public interface OpenLibraryService {
     
+    
+    /**
+     * Retrieves a single book based on the Open Library ID.
+     * @param id The ID.
+     * @return      The first matching result.
+     */
+    public Book retrieveByOpenLibraryId(String id);
+    
     /**
      * Retrieves a single book based on the ISBN.
      * @param query The query string.

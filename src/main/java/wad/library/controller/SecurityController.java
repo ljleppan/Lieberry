@@ -1,13 +1,14 @@
 package wad.library.controller;
 
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import wad.library.domain.User;
 import wad.library.service.UserService;
 
 /**
@@ -18,7 +19,7 @@ import wad.library.service.UserService;
 public class SecurityController {
     
     @Autowired
-    private UserService userService;
+    UserService userService;
     
     /**
      * Return the "register" view
@@ -33,6 +34,43 @@ public class SecurityController {
         return "register";
     }
     
+    @RequestMapping(value="register", method=RequestMethod.POST)
+    public String register(Model model,
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String password2){
+        
+        System.out.println("POST to register");
+        
+        boolean error = false;
+        if (userService.userExits(username)){
+            model.addAttribute("usernameError", "Username is already in use.");
+            error = true;
+        }
+        if (password == null || password2 == null){
+            model.addAttribute("passwordError", "Must set a password.");
+            error = true;
+        }
+        if (password != null && !password.equals(password2)){
+            model.addAttribute("passwordError", "Passwords did not match.");
+            error = true;
+        }
+        
+        if (error){
+            return "register";
+        }
+        
+        userService.addUser(username, password);
+        return "redirect:/app/registrationsuccess";
+    }
+    
+    @RequestMapping(value="registrationsuccess", method=RequestMethod.GET)
+    private String registrationSuccess(Model model){
+        System.out.println("GET to registrationsuccess");
+        model.addAttribute("message", "Registration Successfull. You can now login.");
+        return "login";
+    }
+    
     /**
      * Return the "login" view.
      * 
@@ -43,7 +81,6 @@ public class SecurityController {
     @RequestMapping(value="login", method=RequestMethod.GET)
     public String getLogin(){
         System.out.println("GET to login");
-        userService.init();
         return "login";
     }
     
@@ -74,7 +111,31 @@ public class SecurityController {
      */
     @RequestMapping(value="logout", method=RequestMethod.GET)
     public String getLogout(Model model){
+        System.out.println("GET to logout");
         return "redirect:/app";
     }
-        
+    
+    @PreAuthorize("hasRole('admin')")
+    @RequestMapping(value="users", method=RequestMethod.GET)
+    public String getUsers(Model model){
+        System.out.println("GET to usermanagement");
+        model.addAttribute("users", userService.getAll());
+        return "usermanagement";
+    }
+    
+    @PreAuthorize("hasRole('admin')")
+    @RequestMapping(value="users/{id}/admin", method=RequestMethod.POST)
+    public String toggleAdmin(Model model, @PathVariable Long id){
+        System.out.println("POST to users/"+id+"/admin");
+        User user = userService.toggleAdmin(id);
+        return "redirect:/app/users";
+    }
+    
+    @PreAuthorize("hasRole('admin')")
+    @RequestMapping(value="users/{id}", method=RequestMethod.DELETE)
+    public String deleteUser(Model model, @PathVariable Long id){
+        System.out.println("DELETE to users/"+id);
+        userService.deleteUser(id);
+        return "redirect:/app/users";
+    }
 }

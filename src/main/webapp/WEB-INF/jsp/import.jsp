@@ -13,7 +13,7 @@
                 <form action="${pageContext.request.contextPath}/app/import" method="POST" class="form-horizontal">
                     <div class="controls-group">
                         <div class="controls-row">
-                            <input type="text" name="query" class="search-query input-xlarge" />
+                            <input id="query" type="text" name="query" class="search-query input-xlarge" />
                         </div>
 
                         <div class="controls-row">                   
