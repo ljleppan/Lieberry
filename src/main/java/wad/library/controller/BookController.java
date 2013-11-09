@@ -36,7 +36,7 @@ public class BookController {
     /**
      * Maximum number of import query results.
      */
-    public static final int IMPORT_RESULT_LIMIT = 5;
+    public static final int IMPORT_RESULT_LIMIT = 25;
     
     @Autowired
     BookService bookService;

@@ -63,7 +63,7 @@
             </form>
         </div>
                 
-        <div class="span12">
+        <div>
             <p>
                 Displaying page ${pageNumber} of ${totalPages} for ${totalItems} books matching the query.
             </p>

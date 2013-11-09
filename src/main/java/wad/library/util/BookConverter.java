@@ -41,7 +41,7 @@ public class BookConverter {
             title = olBook.getTitle();
         }
         if (olBook.getSubtitle() != null){
-            title = title+olBook.getSubtitle();
+            title = title+" - "+olBook.getSubtitle();
         }
         book.setTitle(title);
         

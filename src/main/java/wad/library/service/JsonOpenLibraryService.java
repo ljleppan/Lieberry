@@ -243,7 +243,7 @@ public class JsonOpenLibraryService implements OpenLibraryService {
      */
     private List<OpenLibrarySearchResult> trimResults(OpenLibrarySearchResultList results, int number) {
         List<OpenLibrarySearchResult> docs = results.getDocs();
-        if (docs.size() > 11){
+        if (docs.size() > number + 1){
             docs = docs.subList(0, number + 1);
         }
         return docs;

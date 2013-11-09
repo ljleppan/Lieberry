@@ -26,5 +26,11 @@
         </sec:authorize>
     </div>
     
+    <div class="control-group text-center">
+        <sec:authorize access="hasRole('admin')">
+            <a href="users" class="btn btn-large input-block-level btn-info">User Management</a>
+        </sec:authorize>
+    </div>
+    
                 
 <%@include file="/WEB-INF/jspf/footer.jspf"  %>

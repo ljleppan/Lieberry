@@ -1,7 +1,10 @@
 package wad.library.controller;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -32,7 +35,7 @@ public class SearchController {
      * 
      * Searches the database and return a view of the results.
      * 
-     * <p>When searching for an ISBN or a year, the results only contain an exact match.
+     * <p>When searching for a year, the results only contain an exact match.
      * For other kinds of queries, results contain all books for which the queried
      * field contains the queried text. Results are paged and only the requested page is
      * shown.</p>
@@ -49,36 +52,25 @@ public class SearchController {
     public String search(
             Model model,
             @RequestParam String field,
-            @RequestParam String query,
-            @RequestParam(required=false, defaultValue="1") int pageNumber)
+            @RequestParam String query)
     {
-        Page<Book> results;
-        if ("isbn".equals(field)) {
-            results = bookService.findAllByIsbnLike(query, pageNumber, BookController.PAGE_SIZE);
-        } else if ("author".equals(field)) {
-            results = bookService.findAllByAuthorLike(query, pageNumber, BookController.PAGE_SIZE);
-        } else if ("publisher".equals(field)) {
-            results = bookService.findAllByPublisherLike(query, pageNumber, BookController.PAGE_SIZE);
-        } else if ("publicationYear".equals(field)) {
-            int year;
-            try {
-                year = Integer.parseInt(query);
-            } catch (Exception e) {
-                year = new GregorianCalendar().get(Calendar.YEAR);
-            }
-            results = bookService.findAllByPublicationYear(year, pageNumber, BookController.PAGE_SIZE);
-        } else {
-            results = bookService.findAllByTitleLike(query, pageNumber, BookController.PAGE_SIZE);
+        if (query == null || query.isEmpty()){
+            return "redirect:/app/books";
         }
-
-        model.addAttribute("books", results.getContent());
-        model.addAttribute("pageNumber", pageNumber);
-        model.addAttribute("totalPages", results.getTotalPages());
-        model.addAttribute("totalItems", results.getTotalElements());
-        return "books";
+        try {
+            query = URLEncoder.encode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Do nuthing :'(
+        }
+        
+        if ("publicationYear".equals(field)){
+            return "redirect:/app/books/publicationyear/"+query;
+        } else {
+            return "redirect:/app/books/search/"+field+"/"+query;
+        }
     }
     
-    /**
+        /**
      * DO NOT CALL DIRECTLY
      *
      * Displays all books with the exact title of the query.
@@ -98,6 +90,15 @@ public class SearchController {
             @PathVariable String query,
             @RequestParam(required=false, defaultValue="1") int pageNumber)
     {
+        if (query == null || query.isEmpty()){
+            query = "";
+        }
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Weeeeee
+        }
+
         Page<Book> results = bookService.findAllByTitle(query, pageNumber, BookController.PAGE_SIZE);
         model.addAttribute("books", results.getContent());
         model.addAttribute("pageNumber", pageNumber);
@@ -126,6 +127,15 @@ public class SearchController {
             @PathVariable String query,
             @RequestParam(required=false, defaultValue="1") int pageNumber)
     {
+        if (query == null || query.isEmpty()){
+            query = "";
+        }
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Weeeeee
+        }
+        
         Page<Book> results = bookService.findAllByAuthor(query, pageNumber, BookController.PAGE_SIZE);
         model.addAttribute("books", results.getContent());
         model.addAttribute("pageNumber", pageNumber);
@@ -155,6 +165,15 @@ public class SearchController {
             @PathVariable String query,
             @RequestParam(required=false, defaultValue="1") int pageNumber)
     {
+        if (query == null || query.isEmpty()){
+            query = "";
+        }
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Weeeeee
+        }
+        
         Page<Book> results = bookService.findAllByPublisher(query, pageNumber, BookController.PAGE_SIZE);
         model.addAttribute("books", results.getContent());
         model.addAttribute("pageNumber", pageNumber);
@@ -195,6 +214,138 @@ public class SearchController {
         model.addAttribute("totalItems", results.getTotalElements());
         return "books";
     }
+  
+    
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the title partially matching the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
+    @RequestMapping(value = "books/search/title/{query}", method=RequestMethod.GET)
+    public String findByTitleLike(
+            Model model,
+            @PathVariable String query,
+            @RequestParam(required=false, defaultValue="1") int pageNumber)
+    {        
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Weeeeee
+        }
+        Page<Book> results = bookService.findAllByTitleLike(query, pageNumber, BookController.PAGE_SIZE);
+        model.addAttribute("books", results.getContent());
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", results.getTotalPages());
+        model.addAttribute("totalItems", results.getTotalElements());
+        return "books";
+    }
+    
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the author partially matching the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
+    @RequestMapping(value = "books/search/author/{query}", method=RequestMethod.GET)
+    public String findByAuthorLike(
+            Model model,
+            @PathVariable String query,
+            @RequestParam(required=false, defaultValue="1") int pageNumber)
+    {
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Weeeeee
+        }
+        Page<Book> results = bookService.findAllByAuthorLike(query, pageNumber, BookController.PAGE_SIZE);
+        model.addAttribute("books", results.getContent());
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", results.getTotalPages());
+        model.addAttribute("totalItems", results.getTotalElements());
 
-
+        return "books";
+    }
+    
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the publisher partially matching the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
+    @RequestMapping(value = "books/search/publisher/{query}", method=RequestMethod.GET)
+    public String findByPublisherLike(
+            Model model,
+            @PathVariable String query,
+            @RequestParam(required=false, defaultValue="1") int pageNumber)
+    {
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Weeeeee
+        }
+        Page<Book> results = bookService.findAllByPublisherLike(query, pageNumber, BookController.PAGE_SIZE);
+        model.addAttribute("books", results.getContent());
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", results.getTotalPages());
+        model.addAttribute("totalItems", results.getTotalElements());
+        return "books";
+    }
+    
+    /**
+     * DO NOT CALL DIRECTLY
+     *
+     * Displays all books with the isbn partially matching the query.
+     * 
+     * <p>Results are paged.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param query The query string.
+     * @param pageNumber The page of the results to display. If no page is specified, the first page is displayed.
+     * @return "books", populated by the search results.
+     */
+    @RequestMapping(value = "books/search/isbn/{query}", method=RequestMethod.GET)
+    public String findIsbnLike(
+            Model model,
+            @PathVariable String query,
+            @RequestParam(required=false, defaultValue="1") int pageNumber)
+    {
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            //Weeeeee
+        }
+        Page<Book> results = bookService.findAllByIsbnLike(query, pageNumber, BookController.PAGE_SIZE);
+        model.addAttribute("books", results.getContent());
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", results.getTotalPages());
+        model.addAttribute("totalItems", results.getTotalElements());
+        return "books";
+    }
 }

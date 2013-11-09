@@ -42,7 +42,6 @@ public class LibrarySeleniumTest {
         baseUrl = "http://localhost:" + port+"/wepa/app";
         rootUrl = "http://localhost:" + port;
         go("/logout");
-        
     }
     
     @After
@@ -53,6 +52,7 @@ public class LibrarySeleniumTest {
     @Test
     public void rootLoadsMenu(){
         driver.get(rootUrl+"/wepa/app");
+        System.out.println("OVER HERE: "+driver.getCurrentUrl());
         Assert.isTrue(
                 sourceContains("Browse library"),
                 "Root should serve a page with a 'Browse library' button."

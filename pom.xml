@@ -260,14 +260,11 @@
                     <execution>
                         <id>start-jetty</id>
                         <phase>process-test-classes</phase>
-                        
-                        
                         <goals>
                             <!-- <goal>run-exploded</goal> -->
                             <!-- toimii 8.x -versioissa -->
                             <goal>start</goal>
-                        </goals>
-                                                
+                        </goals>                      
                         <configuration>
                             <scanIntervalSeconds>5</scanIntervalSeconds>
                             <daemon>true</daemon>
