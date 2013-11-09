@@ -69,8 +69,7 @@ public class BookConverter {
                 book.setPublicationYear(new GregorianCalendar().get(GregorianCalendar.YEAR));
             }
         }
-
-        System.out.println("Transformed given olBook to following book: "+book);
+        
         return book;
     }
 }

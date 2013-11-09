@@ -107,7 +107,7 @@ public class ImportController {
             model.addAttribute("book", book);
             return "add";
         }
-        if (book.getIsbn() == null){
+        if (book.getIsbn() == null || book.getIsbn().equals("")){
             model.addAttribute("isbnNull", true);
             model.addAttribute("book", book);
             return "add";
