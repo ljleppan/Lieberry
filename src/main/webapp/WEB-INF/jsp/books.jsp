@@ -25,6 +25,13 @@
               .etal-trigger:hover + .etal-popup{
                   display: block;
               }
+              
+              img{
+                  background-image: url("${pageContext.request.contextPath}/assets/book.png");
+                  min-width: 40px;
+                  min-height: 40px;
+              }
+              
         </style>
 
 <%@include file="/WEB-INF/jspf/header.jspf"  %>
@@ -88,7 +95,7 @@
                     <c:forEach var="index" begin="0" end="${fn:length(books) - 1}">
                         <tr>
                             <td><a href="${pageContext.request.contextPath}/app/books/${books[index].isbn}" class="btn">View</a></td>
-                            <td><img src="https://covers.openlibrary.org/b/isbn/<c:out value='${books[index].isbn}'/>-S.jpg" alt="Cover for <c:out value='${books[index].title}'/>." /></td>
+                            <td><img src="https://covers.openlibrary.org/b/isbn/<c:out value='${books[index].isbn}'/>-S.jpg" alt="Cover for <c:out value='${books[index].title}'/>." onerror="this.src='http://www.rip-factor.com/images/somethingawful.gif';"/></td>
                             <td><c:out value="${books[index].title}"/></td>
                             
                             <td>

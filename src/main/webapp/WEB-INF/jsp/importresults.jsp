@@ -2,6 +2,14 @@
 <%@include file="/WEB-INF/jspf/head.jspf"  %>
 
         <title>Lieberry - Import search results</title>
+        
+        <style type="text/css">
+            img{
+                  background-image: url("${pageContext.request.contextPath}/assets/book.png");
+                  min-width: 40px;
+                  min-height: 40px;
+              }
+        </style>
 
 <%@include file="/WEB-INF/jspf/header.jspf"  %>
 
