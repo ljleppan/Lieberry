@@ -250,6 +250,7 @@ public class BookController {
     }
     
     /**
+     * DO NOT CALL DIRECTLY
      * 
      * Queries OpenLibrary for books and returns of view of the results for import.
      * 
@@ -263,7 +264,7 @@ public class BookController {
      * @param model Instance of Model for given HTTP request and related response.
      * @param query The query string.
      * @param field The field to be queried. Can be "isbn", "author" or "title".
-     * @return A view with 
+     * @return      A view with the results.
      */
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="import", method=RequestMethod.POST)
@@ -287,6 +288,20 @@ public class BookController {
         return "importresults";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     * 
+     * Imports a book from Open Library.
+     * 
+     * <p>Queries the Autowired {@link wad.library.service.OpenLibraryService} for
+     * a books matching the search and saves the resulting book. Returns a view of the
+     * found book.</p>
+     * 
+     * <p>Security: Logged in.</p>
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param id    Open Library ID of the requested book.
+     * @return      A view showing the saved book's details.
+     */
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="import/{id}", method=RequestMethod.POST)
     public String importBook(Model model, @PathVariable String id){

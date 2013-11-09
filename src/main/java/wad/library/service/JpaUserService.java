@@ -6,7 +6,6 @@
 package wad.library.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -23,12 +22,19 @@ import wad.library.domain.Role;
 import wad.library.domain.User;
 import wad.library.repository.UserRepository;
 
+/**
+ *
+ * @author Loezi
+ */
 @Service
 public class JpaUserService implements UserDetailsService, UserService{
 
     @Autowired
     private UserRepository userRepository;
     
+    /**
+     * Initializes the repository with some base user acccounts.
+     */
     @PostConstruct
     public void init(){
         if (userRepository.count() <= 0){
@@ -54,6 +60,15 @@ public class JpaUserService implements UserDetailsService, UserService{
         }
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     * 
+     * Allows Spring to perform logins.
+     * 
+     * @param username                      User's username
+     * @return                              UserDetails of the requested user account.
+     * @throws UsernameNotFoundException    If username is not in use.
+     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -74,6 +89,12 @@ public class JpaUserService implements UserDetailsService, UserService{
         return authorities;
     }
     
+    /**
+     * Adds a new user.
+     * @param username New user's username.
+     * @param password New user's password.
+     * @return         The created User object.
+     */
     @Override
     public User addUser(String username, String password){
         if (userRepository.findByUsername(username) != null){
@@ -93,16 +114,30 @@ public class JpaUserService implements UserDetailsService, UserService{
         return user;
     }
 
+    /**
+     * Checks if a username is already in use.
+     * @param username Username to check.
+     * @return         "true" if username is in use, "false" if not.
+     */
     @Override
     public boolean userExits(String username) {
         return (userRepository.findByUsername(username) != null);
     }
 
+    /**
+     * Returns all the users.
+     * @return List of all the known users.
+     */
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
+    /**
+     * Toggles an users admin powers.
+     * @param id the ID indetifying the user.
+     * @return   the User object corresponding to the changed user, or null.
+     */
     @Override
     public User toggleAdmin(Long id) {
         User user = userRepository.findOne(id);
@@ -142,6 +177,10 @@ public class JpaUserService implements UserDetailsService, UserService{
         return user;
     }
     
+    /** 
+     * Deletes an user account.
+     * @param id the ID of the user account to delete.
+     */
     @Override
     public void deleteUser(Long id){
         userRepository.delete(id);

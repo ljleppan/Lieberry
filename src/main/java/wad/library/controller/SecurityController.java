@@ -22,6 +22,8 @@ public class SecurityController {
     UserService userService;
     
     /**
+     * DO NOT CALL DIRECTLY
+     * 
      * Return the "register" view
      * 
      * <p>Security: Logged in.</p>
@@ -34,6 +36,22 @@ public class SecurityController {
         return "register";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     * 
+     * Registers a new user account with the provided details.
+     * 
+     * <p>The provided username must not be already in use and must not be empty.
+     * The provided passwords must match and must not be empty.</p>
+     * 
+     * <p>Security: Anonymous.</p>
+     * 
+     * @param model     Instance of Model for given HTTP request and related response.
+     * @param username  Username for the new user account.
+     * @param password  Password for the new user account.
+     * @param password2 Password for the new user account.
+     * @return          "registrationsuccess" if succesfull, "register" if unsuccesfull.
+     */
     @RequestMapping(value="register", method=RequestMethod.POST)
     public String register(Model model,
             @RequestParam String username,
@@ -45,6 +63,10 @@ public class SecurityController {
         boolean error = false;
         if (userService.userExits(username)){
             model.addAttribute("usernameError", "Username is already in use.");
+            error = true;
+        }
+        if (username == null){
+            model.addAttribute("usernameError", "Username can not be empty.");
             error = true;
         }
         if (password == null || password2 == null){
@@ -64,14 +86,26 @@ public class SecurityController {
         return "redirect:/app/registrationsuccess";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     * 
+     * Shows the login form with a message about succesfully registering a new user account.
+     * 
+     * <p>Security: Anonymous.</p>.
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @return      "login".
+     */
     @RequestMapping(value="registrationsuccess", method=RequestMethod.GET)
-    private String registrationSuccess(Model model){
+    public String registrationSuccess(Model model){
         System.out.println("GET to registrationsuccess");
         model.addAttribute("message", "Registration Successfull. You can now login.");
         return "login";
     }
     
     /**
+     * DO NOT CALL DIRECTLY
+     * 
      * Return the "login" view.
      * 
      * <p>Security: Anonymous.</p>
@@ -85,6 +119,8 @@ public class SecurityController {
     }
     
     /**
+     * DO NOT CALL DIRECTLY
+     * 
      * Return the "login" view after a failed login attempt.
      * 
      * <p>Returned view contains an error message about invalid credetials.</p>
@@ -102,6 +138,8 @@ public class SecurityController {
     }
     
     /**
+     * DO NOT CALL DIRECTLY
+     * 
      * Returns the main menu after logging the user out.
      * 
      * <p>Security: Anonymous.</p>
@@ -115,6 +153,16 @@ public class SecurityController {
         return "redirect:/app";
     }
     
+    /**
+     * DO NOT CALL DIRECLY
+     * 
+     * Shows the user management page.
+     * 
+     * <p>Security: Admin.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @return      "usermanagement"
+     */
     @PreAuthorize("hasRole('admin')")
     @RequestMapping(value="users", method=RequestMethod.GET)
     public String getUsers(Model model){
@@ -123,6 +171,17 @@ public class SecurityController {
         return "usermanagement";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     * 
+     * Toggles user's admin powers and redirects to the user management page.
+     * 
+     * <p>Security: Admin</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param id    User ID identifying the user whose admin status to toggle
+     * @return      The "user management" view.
+     */
     @PreAuthorize("hasRole('admin')")
     @RequestMapping(value="users/{id}/admin", method=RequestMethod.POST)
     public String toggleAdmin(Model model, @PathVariable Long id){
@@ -131,6 +190,17 @@ public class SecurityController {
         return "redirect:/app/users";
     }
     
+    /**
+     * DO NOT CALL DIRECTLY
+     * 
+     * Deletes an user and redirects to the user management page.
+     * 
+     * <p>Security: Admin.</p>
+     * 
+     * @param model Instance of Model for given HTTP request and related response.
+     * @param id    User ID identifying the user to delete.
+     * @return      Redirect to the user management page.
+     */
     @PreAuthorize("hasRole('admin')")
     @RequestMapping(value="users/{id}", method=RequestMethod.DELETE)
     public String deleteUser(Model model, @PathVariable Long id){

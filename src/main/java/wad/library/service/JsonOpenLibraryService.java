@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -28,8 +25,6 @@ import wad.library.util.BookConverter;
 @Service
 public class JsonOpenLibraryService implements OpenLibraryService {
     
-    Logger log = LoggerFactory.getLogger(JsonOpenLibraryService.class);
-    
     private RestTemplate restTemplate;
     private ObjectMapper mapper;
     
@@ -45,7 +40,7 @@ public class JsonOpenLibraryService implements OpenLibraryService {
 
     /**
      * Retrieves a single book based on the ISBN.
-     * @param query The query string.
+     * @param isbn  ISBN.
      * @return      The first matching result.
      */
     @Override
@@ -249,6 +244,11 @@ public class JsonOpenLibraryService implements OpenLibraryService {
         return docs;
     }
 
+    /**
+     * Retrieves a book from the Open Library
+     * @param id    The Open Library ID of the book that should be retrieved
+     * @return      The book or null if no match.
+     */
     @Override
     public Book retrieveByOpenLibraryId(String id) {
         if(id.equals("")){

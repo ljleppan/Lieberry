@@ -1,11 +1,8 @@
 package wad.library.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -151,6 +148,7 @@ public class Book implements Serializable {
     }
 
     /**
+     * Return the book's Open Library ID
      * @return the oldID
      */
     public String getOlId() {
@@ -158,7 +156,8 @@ public class Book implements Serializable {
     }
 
     /**
-     * @param oldID the oldID to set
+     * Set the book's Open Library ID
+     * @param olId Open Library ID
      */
     public void setOlId(String olId) {
         this.olId = olId;

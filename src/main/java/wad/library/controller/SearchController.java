@@ -3,8 +3,6 @@ package wad.library.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -45,7 +43,6 @@ public class SearchController {
      * @param model Instance of Model for given HTTP request and related response.
      * @param field The field to be queried.
      * @param query The query string.
-     * @param pageNumber The page of results to be shown. If not specified, the first {@link BookController.#PAGE_SIZE} results are shown.
      * @return "books", populated by the requested page of the search results.
      */
     @RequestMapping(value = "search", method = RequestMethod.POST)
