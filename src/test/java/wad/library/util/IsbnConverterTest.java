@@ -10,6 +10,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import wad.library.util.IsbnConverter;
+import wad.library.util.IsbnConverter;
 import static org.junit.Assert.*;
 
 /**
