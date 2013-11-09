@@ -41,7 +41,7 @@ public class BookControllerTest {
         viewResolver.setSuffix(".jsp");
 
         return viewResolver;
-    }
+    }    
     
     @Before
     public void setUp() {

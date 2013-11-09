@@ -867,19 +867,7 @@ public class LibrarySeleniumTest {
                 "Importing the ISBN '9780980200447', the resulting page should contain the text '2009'.");
     }
     
-        //Unable to test non-existant ISBNs, OpenLibrary contains records with nonexistant ISBNs. See f.ex. openlibrary.org/isbn/1
-    
-    // Register //
-    
-        //TODO
-    
-    // Usermanagement //
-    
-        //TODO
-    
-    // Admin //
-    
-        //TODO
+    //Unable to test non-existant ISBNs, OpenLibrary contains records with nonexistant ISBNs. See f.ex. openlibrary.org/isbn/1
      
     // Helper methods //
     
