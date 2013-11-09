@@ -24,7 +24,7 @@ import wad.library.repository.UserRepository;
 
 /**
  *
- * @author Loezi
+ * @author ljleppan
  */
 @Service
 public class JpaUserService implements UserDetailsService, UserService{

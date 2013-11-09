@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * The default controller.
- * @author Loezi
+ * @author ljleppan
  */
 @Controller
 public class DefaultController {

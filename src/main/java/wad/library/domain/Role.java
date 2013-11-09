@@ -15,7 +15,7 @@ import javax.persistence.ManyToMany;
 
 /**
  * A user's role, representing his ability to do things on the website.
- * @author Loezi
+ * @author ljleppan
  */
 @Entity(name = "ROLES")
 public class Role {

@@ -17,7 +17,7 @@ import wad.library.service.OpenLibraryService;
 
 /**
  * Controller for search related requests.
- * @author Loezi
+ * @author ljleppan
  */
 @Controller
 public class SearchController {

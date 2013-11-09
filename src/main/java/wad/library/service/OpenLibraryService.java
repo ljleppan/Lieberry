@@ -6,7 +6,7 @@ import wad.library.domain.Book;
 
 /**
  * An Interface for retrieving book data from the Open Library
- * @author Loezi
+ * @author ljleppan
  */
 public interface OpenLibraryService {
     

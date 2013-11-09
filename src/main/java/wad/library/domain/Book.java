@@ -19,7 +19,7 @@ import wad.library.util.IsbnConverter;
 
 /**
  * Represents a single book.
- * @author Loezi
+ * @author ljleppan
  */
 @Entity
 @Table(name="books")

@@ -13,7 +13,7 @@ import wad.library.service.UserService;
 
 /**
  * Controller for security and user management related requests.
- * @author Loezi
+ * @author ljleppan
  */
 @Controller
 public class SecurityController {

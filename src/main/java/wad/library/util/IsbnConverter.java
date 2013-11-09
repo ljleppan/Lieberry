@@ -8,7 +8,7 @@ package wad.library.util;
 
 /**
  * Converts Strings to an ISBN-esque strings.
- * @author Loezi
+ * @author ljleppan
  */
 public class IsbnConverter {
     

@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * Represents an useraccount for the website.
- * @author Loezi
+ * @author ljleppan
  */
 @Entity(name = "USERS")
 public class User implements Serializable{

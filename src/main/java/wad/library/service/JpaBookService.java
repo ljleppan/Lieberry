@@ -1,6 +1,5 @@
 package wad.library.service;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -17,7 +16,7 @@ import wad.library.repository.BookRepository;
 
 /**
  * A JPA-based impelementation of the {@link BookService} interface.
- * @author Loezi
+ * @author ljleppan
  */
 @Service
 public class JpaBookService implements BookService {

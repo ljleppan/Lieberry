@@ -8,7 +8,7 @@ import wad.library.domain.Book;
 
 /**
  * A repository of book data.
- * @author Loezi
+ * @author ljleppan
  */
 public interface BookRepository extends JpaRepository<Book, String>{
 

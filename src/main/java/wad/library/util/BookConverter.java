@@ -10,7 +10,7 @@ import wad.library.domain.openlibrary.OpenLibraryListElement;
 
 /**
  * Converts instances of {@link OpenLibraryBook} to instances of {@link Book}.
- * @author Loezi
+ * @author ljleppan
  */
 public class BookConverter {
     /**

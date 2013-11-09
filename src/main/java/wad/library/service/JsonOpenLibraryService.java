@@ -20,7 +20,7 @@ import wad.library.util.BookConverter;
 
 /**
  * An impelementation of the {@link OpenLibraryService} that uses the OpenLibrary JSON API.
- * @author Loezi
+ * @author ljleppan
  */
 @Service
 public class JsonOpenLibraryService implements OpenLibraryService {

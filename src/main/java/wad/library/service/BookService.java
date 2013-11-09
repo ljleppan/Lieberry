@@ -6,7 +6,7 @@ import wad.library.domain.Book;
 
 /**
  * An interface for saving and retrieving books.
- * @author Loezi
+ * @author ljleppan
  */
 public interface BookService {
     

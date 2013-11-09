@@ -5,7 +5,7 @@ import wad.library.domain.User;
 
 /**
  * A repository of user data.
- * @author Loezi
+ * @author ljleppan
  */
 public interface UserRepository extends JpaRepository<User, Long>{
 
