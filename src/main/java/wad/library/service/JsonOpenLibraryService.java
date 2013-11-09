@@ -100,7 +100,6 @@ public class JsonOpenLibraryService implements OpenLibraryService {
      */
     private List<Book> retrieveMultipleBooks(String url, int limit){
         String json = fetchJson(url);
-        System.out.println(json);
         
         if (limit < 0){
             limit = 0;
@@ -145,7 +144,6 @@ public class JsonOpenLibraryService implements OpenLibraryService {
         List<OpenLibraryBook> olBooks = new ArrayList<OpenLibraryBook>();
         for (OpenLibraryBook olBook : map.values()){
             olBooks.add(olBook);
-            System.out.println(olBook);
         }
         return olBooks;
     }
