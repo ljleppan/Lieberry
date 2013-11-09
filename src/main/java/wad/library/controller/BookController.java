@@ -3,7 +3,6 @@ package wad.library.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import wad.library.domain.Book;
 import wad.library.service.BookService;
-import wad.library.service.OpenLibraryService;
-import wad.library.util.IsbnConverter;
 
 /**
  * Controller for simple book-related requests.
