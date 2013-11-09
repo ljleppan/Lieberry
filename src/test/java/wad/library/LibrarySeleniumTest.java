@@ -38,8 +38,8 @@ public class LibrarySeleniumTest {
         clearDatabase();
         initDatabase();
         driver = new HtmlUnitDriver();
-        port = System.getProperty("jetty.port", "8080");
-        baseUrl = "http://localhost:" + port+"/wepa/app";
+        port = System.getProperty("jetty.port", "8090");
+        baseUrl = "http://localhost:" + port+ "/app";
         rootUrl = "http://localhost:" + port;
         go("/logout");
     }
@@ -50,9 +50,8 @@ public class LibrarySeleniumTest {
     }
     
     @Test
-    public void rootLoadsMenu(){
-        driver.get(rootUrl+"/wepa/app");
-        System.out.println("OVER HERE: "+driver.getCurrentUrl());
+    public void rootLoadsMenu(){       
+        driver.get(rootUrl);
         Assert.isTrue(
                 sourceContains("Browse library"),
                 "Root should serve a page with a 'Browse library' button."
@@ -625,7 +624,7 @@ public class LibrarySeleniumTest {
                 sourceContains("Cherryl A Rousel"),
                 "Book's details should include the author's name.");
         Assert.isTrue(
-                sourceContains("<a href=\"/wepa/app/books/author/Cherryl A Rousel\""),
+                sourceContains("/app/books/author/Cherryl"),
                 "Book's details should include a link all the books by the same author.");
         Assert.isTrue(
                 sourceContains("72579"),
@@ -634,13 +633,13 @@ public class LibrarySeleniumTest {
                 sourceContains("Gaudeamus"),
                 "Book's details should include the publisher's name.");
         Assert.isTrue(
-                sourceContains("<a href=\"/wepa/app/books/publisher/Gaudeamus\""),
+                sourceContains("/app/books/publisher/Gaudeamus\""),
                 "Book's details should include a link all the books by the same publisher.");
         Assert.isTrue(
                 sourceContains("1999"),
                 "Book's details should include the publication year.");
         Assert.isTrue(
-                sourceContains("<a href=\"/wepa/app/books/publicationyear/1999\""),
+                sourceContains("/app/books/publicationyear/1999\""),
                 "Book's details should include a link all the books published during the same year.");
     }
     
@@ -881,15 +880,17 @@ public class LibrarySeleniumTest {
     // Admin //
     
         //TODO
-    
+     
     // Helper methods //
     
     private void go(String url){
         driver.get(baseUrl+url);
+        System.out.println("IM AT "+driver.getCurrentUrl());
     }
     
     private void goBase(){
         driver.get(baseUrl);
+        System.out.println("IM AT "+driver.getCurrentUrl());
     }
     
     private void login(){
