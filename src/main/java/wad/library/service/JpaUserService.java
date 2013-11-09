@@ -33,8 +33,8 @@ public class JpaUserService implements UserDetailsService, UserService{
     public void init(){
         if (userRepository.count() <= 0){
             User admin = new User();
-            admin.setUsername("a");
-            admin.setPassword("a");
+            admin.setUsername("admin");
+            admin.setPassword("nimda");
             List<Role> roles = new ArrayList<Role>();
             Role role = new Role();
             role.setRolename("admin");
