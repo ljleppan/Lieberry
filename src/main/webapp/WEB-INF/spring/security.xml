@@ -15,23 +15,11 @@
        login-processing-url="/app/perform_login" 
        default-target-url="/app/"
        authentication-failure-url="/app/loginfailed" />
-
+      <sec:access-denied-handler error-page="/app/"/>
       <sec:logout logout-url="/app/logout" logout-success-url="/app/" />
     </sec:http>
 
     <sec:authentication-manager>
         <sec:authentication-provider user-service-ref="jpaUserService" />
     </sec:authentication-manager>
-    
-<!--
-    <sec:authentication-manager>
-        <sec:authentication-provider>
-            <sec:user-service>
-                <sec:user name="a" password="a" authorities="admin" />
-                <sec:user name="mockUserForSeleniumThisIsBad" password="h63Eaa6Eq58X92IBccDFmYN9B1i0o7wtCwfOtEimmq2vqLKSzkU6gmpterjNpfLp" authorities="user" />
-                <sec:user name="u" password="u" authorities="user" />
-            </sec:user-service>
-        </sec:authentication-provider>
-    </sec:authentication-manager>
-    -->
 </beans>
