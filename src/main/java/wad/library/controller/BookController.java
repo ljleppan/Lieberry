@@ -56,7 +56,6 @@ public class BookController {
     public String getBooks(
             Model model,
             @RequestParam(required = false, defaultValue = "1") Integer pageNumber){
-        System.out.println("GET to books");
         
         Page<Book> page = bookService.findAll(pageNumber, PAGE_SIZE);
         
@@ -90,19 +89,15 @@ public class BookController {
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="books", method=RequestMethod.POST)
     public String create(Model model, @Valid Book book, BindingResult bindingResult){
-        System.out.println("POST to books");   
         if (bindingResult.hasErrors()){
-            System.out.println("Invalid form, book NOT added");
             model.addAttribute("book", book);
             return "add";
         }
         if (bookService.findByIsbn(book.getIsbn()) != null){
-            System.out.println("ISBN exists, book NOT added");
             model.addAttribute("book", book);
             model.addAttribute("isbnInUse", true);
             return "add";
         }
-        System.out.println("Valid form, book added");
         bookService.create(book);
         return "redirect:/app/books/"+book.getIsbn();
     }
@@ -123,7 +118,6 @@ public class BookController {
      */
     @RequestMapping(value="books/{isbn}", method=RequestMethod.GET)
     public String getBook(Model model, @PathVariable String isbn){
-        System.out.println("GET to books/"+isbn);
         Book book = bookService.findByIsbn(isbn);       
         model.addAttribute("book", book);
         return "book";
@@ -149,13 +143,10 @@ public class BookController {
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="books/{isbn}", method=RequestMethod.POST)
     public String updateBook(Model model, @PathVariable String isbn, @Valid Book book, BindingResult bindingResult){
-        System.out.println("POST to books/"+isbn);
         if (bindingResult.hasErrors()){
-            System.out.println("Invalid form, book NOT updated");
             model.addAttribute("book", book);
             return "edit";
         }
-        System.out.println("Valid form, book updated");
         bookService.update(book);
         return "redirect:/app/books/"+book.getIsbn();
     }
@@ -175,7 +166,6 @@ public class BookController {
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="books/{isbn}", method=RequestMethod.DELETE)
     public String deleteBook(@PathVariable String isbn){
-        System.out.println("DELETE to books/"+isbn);
         bookService.delete(isbn);
         return "redirect:/app/books";
     }
@@ -195,7 +185,6 @@ public class BookController {
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="add", method=RequestMethod.GET)
     public String addBooksForm(Model model){
-        System.out.println("GET to add");
         Book temp = new Book();
         temp.setAuthors(new ArrayList<String>());
         temp.setPublicationYear(new GregorianCalendar().get(Calendar.YEAR));
@@ -220,7 +209,6 @@ public class BookController {
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="edit/{isbn}", method=RequestMethod.GET)
     public String editBookForm(Model model, @PathVariable String isbn){
-        System.out.println("GET to edit");
         Book book = bookService.findByIsbn(isbn);
         model.addAttribute("book", book);
         return "edit";

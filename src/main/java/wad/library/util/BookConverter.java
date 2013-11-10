@@ -61,11 +61,9 @@ public class BookConverter {
         if (olBook.getPublish_date() != null){
             String pubDate = olBook.getPublish_date();
             pubDate = pubDate.substring(pubDate.length() - 4);
-            System.out.println("pubdate = "+pubDate);
             try{
                 book.setPublicationYear(Integer.parseInt(pubDate));
             } catch (Exception ex){
-                System.out.println("Exception: "+ex);
                 book.setPublicationYear(new GregorianCalendar().get(GregorianCalendar.YEAR));
             }
         }

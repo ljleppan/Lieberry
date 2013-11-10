@@ -41,7 +41,6 @@ public class ImportController {
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="import", method=RequestMethod.GET)
     public String importBooksForm(){
-        System.out.println("GET to import");
         return "import";
     }
     
@@ -65,7 +64,6 @@ public class ImportController {
     @PreAuthorize("hasAnyRole('admin', 'user')")
     @RequestMapping(value="import", method=RequestMethod.POST)
     public String findBooksToImport(Model model, @RequestParam String query, @RequestParam String field){
-        System.out.println("POST for import");
         List<Book> books;
         if (field.equals("isbn")){
             String isbn = IsbnConverter.stringToIsbn(query);

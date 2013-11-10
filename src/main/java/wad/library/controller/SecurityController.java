@@ -32,7 +32,6 @@ public class SecurityController {
      */
     @RequestMapping(value="register", method=RequestMethod.GET)
     public String getRegisterForm(){
-        System.out.println("GET to register");
         return "register";
     }
     
@@ -56,20 +55,17 @@ public class SecurityController {
     public String register(Model model,
             @RequestParam String username,
             @RequestParam String password,
-            @RequestParam String password2){
-        
-        System.out.println("POST to register");
-        
+            @RequestParam String password2){  
         boolean error = false;
         if (userService.userExits(username)){
             model.addAttribute("usernameError", "Username is already in use.");
             error = true;
         }
-        if (username == null){
+        if (username == null || username.equals("")){
             model.addAttribute("usernameError", "Username can not be empty.");
             error = true;
         }
-        if (password == null || password2 == null){
+        if (password == null || password2 == null || password.equals("") || password2.equals("")){
             model.addAttribute("passwordError", "Must set a password.");
             error = true;
         }
@@ -98,7 +94,6 @@ public class SecurityController {
      */
     @RequestMapping(value="registrationsuccess", method=RequestMethod.GET)
     public String registrationSuccess(Model model){
-        System.out.println("GET to registrationsuccess");
         model.addAttribute("message", "Registration Successfull. You can now login.");
         return "login";
     }
@@ -114,7 +109,6 @@ public class SecurityController {
      */
     @RequestMapping(value="login", method=RequestMethod.GET)
     public String getLogin(){
-        System.out.println("GET to login");
         return "login";
     }
     
@@ -132,7 +126,6 @@ public class SecurityController {
      */
     @RequestMapping(value="loginfailed", method=RequestMethod.GET)
     public String getLoginFailed(Model model){
-        System.out.println("GET to loginfailed");
         model.addAttribute("error", true);
         return "login";
     }
@@ -149,7 +142,6 @@ public class SecurityController {
      */
     @RequestMapping(value="logout", method=RequestMethod.GET)
     public String getLogout(Model model){
-        System.out.println("GET to logout");
         return "redirect:/app";
     }
     
@@ -166,7 +158,6 @@ public class SecurityController {
     @PreAuthorize("hasRole('admin')")
     @RequestMapping(value="users", method=RequestMethod.GET)
     public String getUsers(Model model){
-        System.out.println("GET to usermanagement");
         model.addAttribute("users", userService.getAll());
         return "usermanagement";
     }
@@ -185,7 +176,6 @@ public class SecurityController {
     @PreAuthorize("hasRole('admin')")
     @RequestMapping(value="users/{id}/admin", method=RequestMethod.POST)
     public String toggleAdmin(Model model, @PathVariable Long id){
-        System.out.println("POST to users/"+id+"/admin");
         User user = userService.toggleAdmin(id);
         return "redirect:/app/users";
     }
@@ -204,7 +194,6 @@ public class SecurityController {
     @PreAuthorize("hasRole('admin')")
     @RequestMapping(value="users/{id}", method=RequestMethod.DELETE)
     public String deleteUser(Model model, @PathVariable Long id){
-        System.out.println("DELETE to users/"+id);
         userService.deleteUser(id);
         return "redirect:/app/users";
     }

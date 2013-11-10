@@ -55,7 +55,7 @@ public class SearchController {
             return "redirect:/app/books";
         }
         try {
-            query = URLEncoder.encode(query, "UTF-8");
+            query = URLEncoder.encode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Do nuthing :'(
         }
@@ -91,7 +91,7 @@ public class SearchController {
             query = "";
         }
         try {
-            query = URLDecoder.decode(query, "UTF-8");
+            query = URLDecoder.decode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Weeeeee
         }
@@ -128,7 +128,7 @@ public class SearchController {
             query = "";
         }
         try {
-            query = URLDecoder.decode(query, "UTF-8");
+            query = URLDecoder.decode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Weeeeee
         }
@@ -166,7 +166,7 @@ public class SearchController {
             query = "";
         }
         try {
-            query = URLDecoder.decode(query, "UTF-8");
+            query = URLDecoder.decode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Weeeeee
         }
@@ -234,7 +234,7 @@ public class SearchController {
             @RequestParam(required=false, defaultValue="1") int pageNumber)
     {        
         try {
-            query = URLDecoder.decode(query, "UTF-8");
+            query = URLDecoder.decode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Weeeeee
         }
@@ -267,7 +267,7 @@ public class SearchController {
             @RequestParam(required=false, defaultValue="1") int pageNumber)
     {
         try {
-            query = URLDecoder.decode(query, "UTF-8");
+            query = URLDecoder.decode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Weeeeee
         }
@@ -301,7 +301,7 @@ public class SearchController {
             @RequestParam(required=false, defaultValue="1") int pageNumber)
     {
         try {
-            query = URLDecoder.decode(query, "UTF-8");
+            query = URLDecoder.decode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Weeeeee
         }
@@ -334,7 +334,7 @@ public class SearchController {
             @RequestParam(required=false, defaultValue="1") int pageNumber)
     {
         try {
-            query = URLDecoder.decode(query, "UTF-8");
+            query = URLDecoder.decode(query, "UTF-8").replace("%20", " ");
         } catch (UnsupportedEncodingException ex) {
             //Weeeeee
         }

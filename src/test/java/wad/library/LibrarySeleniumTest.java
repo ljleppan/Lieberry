@@ -873,12 +873,10 @@ public class LibrarySeleniumTest {
     
     private void go(String url){
         driver.get(baseUrl+url);
-        System.out.println("IM AT "+driver.getCurrentUrl());
     }
     
     private void goBase(){
         driver.get(baseUrl);
-        System.out.println("IM AT "+driver.getCurrentUrl());
     }
     
     private void login(){
